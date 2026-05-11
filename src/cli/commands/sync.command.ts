@@ -7,6 +7,10 @@ import { syncLabels } from "../../services/sync.service.js";
 export async function syncCommand(owner: string, repo: string, dryRun: boolean) {
   console.log(chalk.blue("[INFO] Starting sync..."));
 
+  if (dryRun) {
+    console.log(chalk.magenta("[DRY-RUN MODE ENABLED]"));
+  }
+
   const localLabels = loadLabelConfig();
   const remoteLabels = await fetchLabels(owner, repo);
 
@@ -17,8 +21,6 @@ export async function syncCommand(owner: string, repo: string, dryRun: boolean) 
     update: diff.toUpdate.length,
     delete: diff.toDelete.length
   });
-
-  console.log("[INFO] DRY_RUN =", dryRun);
 
   await syncLabels(owner, repo, diff, dryRun);
 }
