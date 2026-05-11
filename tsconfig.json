@@ -1,0 +1,72 @@
+{
+  "compilerOptions": {
+    // =========================
+    // Project Structure
+    // =========================
+
+    // Source files root directory
+    "rootDir": "./src",
+
+    // Output compiled JavaScript
+    "outDir": "./dist",
+
+    // =========================
+    // JavaScript Runtime Target
+    // =========================
+
+    // Modern Node.js module system
+    "module": "nodenext",
+
+    // Modern ECMAScript output
+    "target": "esnext",
+
+    // =========================
+    // Build Outputs (debug & typing)
+    // =========================
+
+    // Generate source maps for debugging
+    "sourceMap": true,
+
+    // Generate TypeScript declaration files (.d.ts)
+    "declaration": true,
+
+    // Generate source maps for declaration files
+    "declarationMap": true,
+
+    // =========================
+    // Type Safety (strict mode)
+    // =========================
+
+    // Enable full strict type-checking
+    "strict": true,
+
+    // Prevent unsafe indexed access (obj[key])
+    "noUncheckedIndexedAccess": true,
+
+    // Make optional properties more precise
+    "exactOptionalPropertyTypes": true,
+
+    // =========================
+    // Module & Import Behavior
+    // =========================
+
+    // Enforce ESM-style module syntax strictly
+    "verbatimModuleSyntax": true,
+
+    // Ensure each file is treated as an isolated module
+    "isolatedModules": true,
+
+    // Prevent accidental side-effect imports
+    "noUncheckedSideEffectImports": true,
+
+    // Force consistent module detection strategy
+    "moduleDetection": "force",
+
+    // =========================
+    // Performance & Compatibility
+    // =========================
+
+    // Skip type checking of external libraries
+    "skipLibCheck": true
+  }
+}

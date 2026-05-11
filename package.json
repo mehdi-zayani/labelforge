@@ -1,0 +1,26 @@
+{
+  "name": "labelforge",
+  "version": "0.1.0",
+  "description": "CLI tool to manage and synchronize GitHub repository labels from configuration files",
+  "keywords": [
+    "github",
+    "cli",
+    "labels",
+    "automation",
+    "devtools",
+    "typescript"
+  ],
+  "author": "Mehdi Zayani",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsc -w",
+    "test": "echo \"no tests yet\""
+  },
+  "devDependencies": {
+    "typescript": "^6.0.3"
+  }
+}
