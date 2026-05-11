@@ -26,9 +26,16 @@ async function bootstrap() {
       delete: diff.toDelete.length
     });
 
-    await syncLabels("mehdi-zayani", "testing-repo", diff);
+    const dryRun = process.env.DRY_RUN === "true";
 
-    console.log("[SUCCESS] GitHub labels synchronized");
+    console.log("[INFO] DRY_RUN =", dryRun);
+
+    await syncLabels(
+      "mehdi-zayani",
+      "testing-repo",
+      diff,
+      dryRun
+    );
 
   } catch (error) {
     console.error("[ERROR] Failed to process labels", error);
