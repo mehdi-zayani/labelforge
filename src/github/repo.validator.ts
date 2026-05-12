@@ -1,6 +1,8 @@
 import { octokit } from "./client.js";
 import { handleGitHubError } from "./github-error.handler.js";
 
+import { logger } from "../utils/logger.js";
+
 export async function validateRepositoryAccess(
   owner: string,
   repo: string
@@ -11,16 +13,18 @@ export async function validateRepositoryAccess(
       repo,
     });
 
+    logger.success(`Repository validated: ${owner}/${repo}`);
+
     return true;
   } catch (error: any) {
     handleGitHubError(error, "validateRepositoryAccess");
 
     if (error?.status === 404) {
-      console.error("[ERROR] Repository not found or not accessible");
+      logger.error("Repository not found or not accessible");
     } else if (error?.status === 401) {
-      console.error("[ERROR] Unauthorized access - invalid token");
+      logger.error("Unauthorized access - invalid GitHub token");
     } else {
-      console.error("[ERROR] Repository validation failed");
+      logger.error("Repository validation failed");
     }
 
     return false;
