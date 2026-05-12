@@ -1,6 +1,6 @@
 import chalk from "chalk";
 import figlet from "figlet";
-
+import prompts from "prompts";
 
 import { fetchLabels } from "../../services/labels.service.js";
 import { loadLabelConfig } from "../../loaders/load-label-config.js";
@@ -46,6 +46,19 @@ export async function syncCommand(
   if (dryRun) {
     console.log(chalk.magenta("[DRY-RUN MODE] No changes applied"));
   }
+  if (!dryRun) {
+  const response = await prompts({
+    type: "confirm",
+    name: "confirmed",
+    message: "Apply changes to GitHub labels?",
+    initial: false
+  });
+
+  if (!response.confirmed) {
+    console.log(chalk.red("\n[ABORTED] Synchronization cancelled\n"));
+    return;
+  }
+}
 
   await syncLabels(owner, repo, diff, dryRun);
 
