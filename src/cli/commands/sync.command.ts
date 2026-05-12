@@ -1,4 +1,6 @@
 import chalk from "chalk";
+import figlet from "figlet";
+
 
 import { fetchLabels } from "../../services/labels.service.js";
 import { loadLabelConfig } from "../../loaders/load-label-config.js";
@@ -10,9 +12,17 @@ export async function syncCommand(
   repo: string,
   dryRun: boolean
 ) {
-  console.log(chalk.cyan("\n=============================="));
-  console.log(chalk.cyan(" LABE LFORGE SYNC ENGINE"));
-  console.log(chalk.cyan("==============================\n"));
+        console.log(
+        chalk.cyan(
+            figlet.textSync("Labelforge", {
+            horizontalLayout: "default"
+            })
+        )
+        );
+
+        console.log(chalk.gray("GitHub Labels Synchronization CLI"));
+        console.log(chalk.gray("Version 0.1.0"));
+        console.log(chalk.gray("Developed by Mehdi Zayani\n"));
 
   console.log(chalk.blue("[STEP 1] Fetching GitHub labels..."));
 
