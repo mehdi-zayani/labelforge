@@ -6,7 +6,10 @@ import { fetchLabels } from "../../services/labels.service.js";
 import { loadLabelConfig } from "../../loaders/load-label-config.js";
 import { compareLabels } from "../../services/label-compare.service.js";
 import { syncLabels } from "../../services/sync.service.js";
+
 import { validateRepositoryAccess } from "../../github/repo.validator.js";
+
+import { logger } from "../../utils/logger.js";
 
 export async function syncCommand(
   owner: string,
@@ -21,40 +24,40 @@ export async function syncCommand(
     )
   );
 
-  console.log(chalk.gray("GitHub Labels Synchronization CLI"));
-  console.log(chalk.gray("Version 0.1.0"));
-  console.log(chalk.gray("Developed by Mehdi Zayani\n"));
+  logger.debug("GitHub Labels Synchronization CLI");
+  logger.debug("Version 0.1.0");
+  logger.debug("Developed by Mehdi Zayani\n");
 
-  console.log(chalk.blue("[STEP 0] Validating repository access..."));
+  logger.info("STEP 0 - Validating repository access...");
 
   const isRepoValid = await validateRepositoryAccess(owner, repo);
 
   if (!isRepoValid) {
-    console.log(chalk.red("[ABORTED] Invalid repository access\n"));
+    logger.error("Synchronization aborted - invalid repository access");
     return;
   }
 
-  console.log(chalk.blue("[STEP 1] Fetching GitHub labels..."));
+  logger.info("STEP 1 - Fetching GitHub labels...");
 
   const localLabels = loadLabelConfig();
   const remoteLabels = await fetchLabels(owner, repo);
 
-  console.log(chalk.green(`[DONE] Local labels: ${localLabels.length}`));
-  console.log(chalk.green(`[DONE] Remote labels: ${remoteLabels.length}`));
+  logger.success(`Local labels loaded: ${localLabels.length}`);
+  logger.success(`Remote labels fetched: ${remoteLabels.length}`);
 
-  console.log(chalk.blue("\n[STEP 2] Comparing labels..."));
+  logger.info("STEP 2 - Comparing labels...");
 
   const diff = compareLabels(localLabels, remoteLabels);
 
-  console.log(chalk.yellow("\n[SUMMARY]"));
-  console.log(`To create : ${diff.toCreate.length}`);
-  console.log(`To update : ${diff.toUpdate.length}`);
-  console.log(`To delete : ${diff.toDelete.length}`);
+  logger.warn("Synchronization summary");
+  logger.info(`To create : ${diff.toCreate.length}`);
+  logger.info(`To update : ${diff.toUpdate.length}`);
+  logger.info(`To delete : ${diff.toDelete.length}`);
 
-  console.log(chalk.blue("\n[STEP 3] Sync execution..."));
+  logger.info("STEP 3 - Sync execution...");
 
   if (dryRun) {
-    console.log(chalk.magenta("[DRY-RUN MODE] No changes applied\n"));
+    logger.warn("DRY-RUN MODE ENABLED - no changes will be applied");
   } else {
     const response = await prompts({
       type: "confirm",
@@ -64,12 +67,12 @@ export async function syncCommand(
     });
 
     if (!response.confirmed) {
-      console.log(chalk.red("\n[ABORTED] Synchronization cancelled\n"));
+      logger.warn("Synchronization cancelled by user");
       return;
     }
   }
 
   await syncLabels(owner, repo, diff, dryRun);
 
-  console.log(chalk.green("\n[SUCCESS] Sync completed\n"));
+  logger.success("Synchronization completed successfully\n");
 }

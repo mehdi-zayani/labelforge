@@ -6,6 +6,8 @@ import {
   updateLabel
 } from "../github/labels.api.js";
 
+import { logger } from "../utils/logger.js";
+
 export async function syncLabels(
   owner: string,
   repo: string,
@@ -15,7 +17,7 @@ export async function syncLabels(
   // CREATE
   for (const label of diff.toCreate) {
     if (dryRun) {
-      console.log(`[DRY-RUN][CREATE] ${label.name}`);
+      logger.debug(`[DRY-RUN][CREATE] ${label.name}`);
       continue;
     }
 
@@ -30,13 +32,13 @@ export async function syncLabels(
 
     await createLabel(owner, repo, payload);
 
-    console.log(`[CREATE] ${label.name}`);
+    logger.success(`CREATE ${label.name}`);
   }
 
   // UPDATE
   for (const label of diff.toUpdate) {
     if (dryRun) {
-      console.log(`[DRY-RUN][UPDATE] ${label.name}`);
+      logger.debug(`[DRY-RUN][UPDATE] ${label.name}`);
       continue;
     }
 
@@ -51,22 +53,23 @@ export async function syncLabels(
 
     await updateLabel(owner, repo, label.name, payload);
 
-    console.log(`[UPDATE] ${label.name}`);
+    logger.success(`UPDATE ${label.name}`);
   }
 
   // DELETE
   for (const label of diff.toDelete) {
     try {
       if (dryRun) {
-        console.log(`[DRY-RUN][DELETE] ${label.name}`);
+        logger.debug(`[DRY-RUN][DELETE] ${label.name}`);
         continue;
       }
 
       await deleteLabel(owner, repo, label.name);
 
-      console.log(`[DELETE] ${label.name}`);
-    } catch (err) {
-      console.error(`[DELETE FAILED] ${label.name}`, err);
+      logger.success(`DELETE ${label.name}`);
+    } catch (error) {
+      logger.error(`DELETE FAILED ${label.name}`);
+      logger.debug(String(error));
     }
   }
 }
