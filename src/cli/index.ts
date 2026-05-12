@@ -1,12 +1,17 @@
+import "dotenv/config";
+
 import { syncCommand } from "./commands/sync.command.js";
+import { parseArgs } from "./parse-args.js";
 
 async function main() {
   const args = process.argv.slice(2);
 
-  const command = args[0];
-  const owner = args[1];
-  const repo = args[2];
-  const dryRun = args.includes("--dry-run");
+  const {
+    command,
+    owner,
+    repo,
+    dryRun
+  } = parseArgs(args);
 
   if (command !== "sync" || !owner || !repo) {
     console.log("Usage: labelforge sync <owner> <repo> [--dry-run]");
