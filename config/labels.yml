@@ -10,3 +10,7 @@ labels:
   - name: documentation
     color: 0075ca
     description: Documentation updates
+  
+  - name: refactor
+    color: 0E45ca
+    description: Code refactor
