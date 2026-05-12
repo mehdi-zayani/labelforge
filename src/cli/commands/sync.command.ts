@@ -6,23 +6,33 @@ import { fetchLabels } from "../../services/labels.service.js";
 import { loadLabelConfig } from "../../loaders/load-label-config.js";
 import { compareLabels } from "../../services/label-compare.service.js";
 import { syncLabels } from "../../services/sync.service.js";
+import { validateRepositoryAccess } from "../../github/repo.validator.js";
 
 export async function syncCommand(
   owner: string,
   repo: string,
   dryRun: boolean
 ) {
-        console.log(
-        chalk.cyan(
-            figlet.textSync("Labelforge", {
-            horizontalLayout: "default"
-            })
-        )
-        );
+  console.log(
+    chalk.cyan(
+      figlet.textSync("Labelforge", {
+        horizontalLayout: "default",
+      })
+    )
+  );
 
-        console.log(chalk.gray("GitHub Labels Synchronization CLI"));
-        console.log(chalk.gray("Version 0.1.0"));
-        console.log(chalk.gray("Developed by Mehdi Zayani\n"));
+  console.log(chalk.gray("GitHub Labels Synchronization CLI"));
+  console.log(chalk.gray("Version 0.1.0"));
+  console.log(chalk.gray("Developed by Mehdi Zayani\n"));
+
+  console.log(chalk.blue("[STEP 0] Validating repository access..."));
+
+  const isRepoValid = await validateRepositoryAccess(owner, repo);
+
+  if (!isRepoValid) {
+    console.log(chalk.red("[ABORTED] Invalid repository access\n"));
+    return;
+  }
 
   console.log(chalk.blue("[STEP 1] Fetching GitHub labels..."));
 
@@ -44,21 +54,20 @@ export async function syncCommand(
   console.log(chalk.blue("\n[STEP 3] Sync execution..."));
 
   if (dryRun) {
-    console.log(chalk.magenta("[DRY-RUN MODE] No changes applied"));
-  }
-  if (!dryRun) {
-  const response = await prompts({
-    type: "confirm",
-    name: "confirmed",
-    message: "Apply changes to GitHub labels?",
-    initial: false
-  });
+    console.log(chalk.magenta("[DRY-RUN MODE] No changes applied\n"));
+  } else {
+    const response = await prompts({
+      type: "confirm",
+      name: "confirmed",
+      message: "Apply changes to GitHub labels?",
+      initial: false,
+    });
 
-  if (!response.confirmed) {
-    console.log(chalk.red("\n[ABORTED] Synchronization cancelled\n"));
-    return;
+    if (!response.confirmed) {
+      console.log(chalk.red("\n[ABORTED] Synchronization cancelled\n"));
+      return;
+    }
   }
-}
 
   await syncLabels(owner, repo, diff, dryRun);
 
