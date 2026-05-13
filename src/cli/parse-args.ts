@@ -1,13 +1,21 @@
 export function parseArgs(args: string[]) {
-  const command = args[0];
-  const owner = args[1];
-  const repo = args[2];
-  const dryRun = args.includes("--dry-run");
-
-  return {
-    command,
-    owner,
-    repo,
-    dryRun
+  const result = {
+    command: undefined as string | undefined,
+    owner: undefined as string | undefined,
+    repo: undefined as string | undefined,
+    dryRun: false,
+    verbose: false,
   };
+
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i];
+
+    if (arg === "sync") result.command = "sync";
+    else if (arg === "--dry-run") result.dryRun = true;
+    else if (arg === "--verbose" || arg === "-v") result.verbose = true;
+    else if (!result.owner) result.owner = arg;
+    else if (!result.repo) result.repo = arg;
+  }
+
+  return result;
 }
