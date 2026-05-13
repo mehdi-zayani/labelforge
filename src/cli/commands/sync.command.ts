@@ -2,7 +2,7 @@ import chalk from "chalk";
 import figlet from "figlet";
 import prompts from "prompts";
 
-import { fetchLabels } from "../../services/labels.service.js";
+import { fetchLabels } from "../../github/labels.api.js";
 import { loadLabelConfig } from "../../loaders/load-label-config.js";
 import { compareLabels } from "../../services/label-compare.service.js";
 import { syncLabels } from "../../services/sync.service.js";

@@ -1,20 +1,24 @@
 import { octokit } from "./client.js";
 import { handleGitHubError } from "./github-error.handler.js";
+import { handleRateLimit } from "./rate-limit.handler.js";
 
 import { logger } from "../utils/logger.js";
 
 export async function fetchLabels(owner: string, repo: string) {
+ 
   try {
     logger.debug(`Fetching labels from ${owner}/${repo}`);
-
-    const { data } = await octokit.issues.listLabelsForRepo({
+    
+    const response = await octokit.issues.listLabelsForRepo({
       owner,
       repo,
     });
 
-    logger.success(`Fetched ${data.length} GitHub labels`);
+    handleRateLimit(response.headers);
 
-    return data;
+    logger.success(`Fetched ${response.data.length} GitHub labels`);
+
+    return response.data;
   } catch (error) {
     handleGitHubError(error, "fetchLabels");
     throw error;
@@ -29,13 +33,15 @@ export async function createLabel(
   try {
     logger.debug(`Creating label ${label.name}`);
 
-    await octokit.issues.createLabel({
+    const response = await octokit.issues.createLabel({
       owner,
       repo,
       name: label.name,
       color: label.color,
       description: label.description ?? "",
     });
+
+    handleRateLimit(response.headers);
 
     logger.success(`Label created: ${label.name}`);
   } catch (error) {
@@ -53,7 +59,7 @@ export async function updateLabel(
   try {
     logger.debug(`Updating label ${currentName}`);
 
-    await octokit.issues.updateLabel({
+    const response = await octokit.issues.updateLabel({
       owner,
       repo,
       name: currentName,
@@ -61,6 +67,8 @@ export async function updateLabel(
       color: label.color,
       description: label.description ?? "",
     });
+
+    handleRateLimit(response.headers);
 
     logger.success(`Label updated: ${label.name}`);
   } catch (error) {
@@ -77,11 +85,13 @@ export async function deleteLabel(
   try {
     logger.debug(`Deleting label ${name}`);
 
-    await octokit.issues.deleteLabel({
+    const response = await octokit.issues.deleteLabel({
       owner,
       repo,
       name,
     });
+
+    handleRateLimit(response.headers);
 
     logger.success(`Label deleted: ${name}`);
   } catch (error) {
