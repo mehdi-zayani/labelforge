@@ -12,7 +12,7 @@ export function handleRateLimit(headers: Record<string, any>) {
 
   const ratio = `${remaining}/${limit}`;
 
-  // INFO BASE
+  // INFO 
   logger.info(`GitHub rate limit: ${ratio} remaining`);
 
   // WARN LEVEL
