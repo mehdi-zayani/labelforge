@@ -1,23 +1,30 @@
 import chalk from "chalk";
+import { getCliContext } from "../cli/context/cli.context.js";
+
+function isVerbose() {
+  return getCliContext().verbose;
+}
 
 export const logger = {
-  info(message: string) {
-    console.log(chalk.blue(`[INFO] ${message}`));
+  info: (msg: string) => {
+    console.log(chalk.blue(`[INFO] ${msg}`));
   },
 
-  success(message: string) {
-    console.log(chalk.green(`[SUCCESS] ${message}`));
+  success: (msg: string) => {
+    console.log(chalk.green(`[SUCCESS] ${msg}`));
   },
 
-  warn(message: string) {
-    console.log(chalk.yellow(`[WARN] ${message}`));
+  warn: (msg: string) => {
+    console.log(chalk.yellow(`[WARN] ${msg}`));
   },
 
-  error(message: string) {
-    console.log(chalk.red(`[ERROR] ${message}`));
+  error: (msg: string) => {
+    console.log(chalk.red(`[ERROR] ${msg}`));
   },
 
-  debug(message: string) {
-    console.log(chalk.gray(`[DEBUG] ${message}`));
-  }
+  debug: (msg: string) => {
+    if (isVerbose()) {
+      console.log(chalk.gray(`[DEBUG] ${msg}`));
+    }
+  },
 };
