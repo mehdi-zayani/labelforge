@@ -2,6 +2,7 @@ import { octokit } from "../client.js";
 import { logger } from "../../utils/logger.js";
 import { handleGitHubError } from "../github-error.handler.js";
 import { handleRateLimit } from "../rate-limit.handler.js";
+import { withTimeout } from "./timeout.js";
 
 type RequestOptions = {
   timeoutMs?: number;
@@ -10,15 +11,6 @@ type RequestOptions = {
 
 function sleep(ms: number) {
   return new Promise((r) => setTimeout(r, ms));
-}
-
-async function withTimeout<T>(promise: Promise<T>, timeoutMs: number) {
-  return Promise.race([
-    promise,
-    new Promise<T>((_, reject) =>
-      setTimeout(() => reject(new Error("GitHub request timeout")), timeoutMs)
-    ),
-  ]);
 }
 
 async function executeWithRetry<T>(
@@ -70,7 +62,7 @@ async function executeWithRetry<T>(
 }
 
 /**
- * CENTRAL GITHUB WRAPPER
+ * CENTRAL GITHUB WRAPPER (SDK LAYER)
  */
 export const githubRequest = {
   fetchLabels(owner: string, repo: string, options?: RequestOptions) {
@@ -84,7 +76,7 @@ export const githubRequest = {
   createLabel(
     owner: string,
     repo: string,
-    payload: any,
+    payload: { name: string; color: string; description?: string },
     options?: RequestOptions
   ) {
     return executeWithRetry(
@@ -105,7 +97,7 @@ export const githubRequest = {
     owner: string,
     repo: string,
     currentName: string,
-    payload: any,
+    payload: { name: string; color: string; description?: string },
     options?: RequestOptions
   ) {
     return executeWithRetry(
@@ -123,7 +115,12 @@ export const githubRequest = {
     );
   },
 
-  deleteLabel(owner: string, repo: string, name: string, options?: RequestOptions) {
+  deleteLabel(
+    owner: string,
+    repo: string,
+    name: string,
+    options?: RequestOptions
+  ) {
     return executeWithRetry(
       () => octokit.issues.deleteLabel({ owner, repo, name }),
       "deleteLabel",
