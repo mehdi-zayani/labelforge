@@ -1,18 +1,14 @@
-import { octokit } from "./client.js";
 import { handleGitHubError } from "./github-error.handler.js";
 import { handleRateLimit } from "./rate-limit.handler.js";
 
 import { logger } from "../utils/logger.js";
+import { githubRequest } from "./resilience/request-wrapper.js";
 
 export async function fetchLabels(owner: string, repo: string) {
- 
   try {
     logger.debug(`Fetching labels from ${owner}/${repo}`);
-    
-    const response = await octokit.issues.listLabelsForRepo({
-      owner,
-      repo,
-    });
+
+    const response = await githubRequest.fetchLabels(owner, repo);
 
     handleRateLimit(response.headers);
 
@@ -33,9 +29,7 @@ export async function createLabel(
   try {
     logger.debug(`Creating label ${label.name}`);
 
-    const response = await octokit.issues.createLabel({
-      owner,
-      repo,
+    const response = await githubRequest.createLabel(owner, repo, {
       name: label.name,
       color: label.color,
       description: label.description ?? "",
@@ -59,14 +53,16 @@ export async function updateLabel(
   try {
     logger.debug(`Updating label ${currentName}`);
 
-    const response = await octokit.issues.updateLabel({
+    const response = await githubRequest.updateLabel(
       owner,
       repo,
-      name: currentName,
-      new_name: label.name,
-      color: label.color,
-      description: label.description ?? "",
-    });
+      currentName,
+      {
+        name: label.name,
+        color: label.color,
+        description: label.description ?? "",
+      }
+    );
 
     handleRateLimit(response.headers);
 
@@ -85,11 +81,7 @@ export async function deleteLabel(
   try {
     logger.debug(`Deleting label ${name}`);
 
-    const response = await octokit.issues.deleteLabel({
-      owner,
-      repo,
-      name,
-    });
+    const response = await githubRequest.deleteLabel(owner, repo, name);
 
     handleRateLimit(response.headers);
 
