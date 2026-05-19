@@ -1,0 +1,17 @@
+version: "1.0"
+
+templates:
+  - group: backend
+    labels:
+      - name: api
+        color: blue
+        description: API related
+      - name: bug
+        color: red
+
+  - group: devops
+    labels:
+      - name: ci
+        color: yellow
+      - name: docker
+        color: cyan
