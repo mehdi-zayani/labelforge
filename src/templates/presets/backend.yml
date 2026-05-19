@@ -1,0 +1,12 @@
+version: "1.0"
+
+templates:
+  - group: backend
+    labels:
+      - name: api
+        color: blue
+        description: REST API
+      - name: service
+        color: green
+      - name: bug
+        color: red
