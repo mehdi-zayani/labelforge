@@ -1,5 +1,5 @@
 import { octokit } from "../github/client.js";
-import type { LabelConfig } from "../types/label.js";
+import type { LabelConfig } from "../domain/label.js";
 
 export async function createLabel(owner: string, repo: string, label: LabelConfig) {
   await octokit.issues.createLabel({

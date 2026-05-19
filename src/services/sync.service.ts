@@ -1,4 +1,4 @@
-import type { LabelComparison } from "../types/label-comparison.js";
+import type { LabelComparison } from "../domain/label-comparison.js";
 
 import {
   createLabel,

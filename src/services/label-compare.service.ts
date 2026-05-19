@@ -1,5 +1,5 @@
-import type { LabelConfig } from "../types/label.js";
-import type { LabelComparison } from "../types/label-comparison.js";
+import type { LabelConfig } from "../domain/label.js";
+import type { LabelComparison } from "../domain/label-comparison.js";
 
 export function compareLabels(
   local: LabelConfig[],

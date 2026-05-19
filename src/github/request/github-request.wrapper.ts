@@ -9,19 +9,33 @@ type RequestOptions = {
   retries?: number;
 };
 
+export type GitHubLabel = {
+  name: string;
+  color: string;
+  description?: string | null;
+};
+
+type GitHubLabelListResponse = {
+  data: GitHubLabel[];
+};
+
 function sleep(ms: number) {
   return new Promise((r) => setTimeout(r, ms));
 }
 
+/**
+ * FIX IMPORTANT:
+ * fn must preserve type T instead of any
+ */
 async function executeWithRetry<T>(
-  fn: () => Promise<any>,
+  fn: () => Promise<T>,
   context: string,
   options?: RequestOptions
 ): Promise<T> {
   const retries = options?.retries ?? 2;
   const timeoutMs = options?.timeoutMs ?? 10000;
 
-  let lastError: any;
+  let lastError: unknown;
 
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
@@ -29,15 +43,15 @@ async function executeWithRetry<T>(
 
       const response = await withTimeout(fn(), timeoutMs);
 
-      if (response?.headers) {
-        handleRateLimit(response.headers);
+      if (response && typeof response === "object" && "headers" in response) {
+        handleRateLimit((response as any).headers);
       }
 
       return response;
-    } catch (error: any) {
+    } catch (error: unknown) {
       lastError = error;
 
-      const status = error?.status;
+      const status = (error as any)?.status;
 
       const isRetryable =
         status === 429 || (status >= 500 && status < 600);
@@ -65,18 +79,24 @@ async function executeWithRetry<T>(
  * CENTRAL GITHUB WRAPPER (SDK LAYER)
  */
 export const githubRequest = {
-  fetchLabels(owner: string, repo: string, options?: RequestOptions) {
-    return executeWithRetry(
+  async fetchLabels(
+    owner: string,
+    repo: string,
+    options?: RequestOptions
+  ): Promise<GitHubLabel[]> {
+    const res = await executeWithRetry<GitHubLabelListResponse>(
       () => octokit.issues.listLabelsForRepo({ owner, repo }),
       "fetchLabels",
       options
     );
+
+    return res.data;
   },
 
-  createLabel(
+  async createLabel(
     owner: string,
     repo: string,
-    payload: { name: string; color: string; description?: string },
+    payload: GitHubLabel,
     options?: RequestOptions
   ) {
     return executeWithRetry(
@@ -93,11 +113,11 @@ export const githubRequest = {
     );
   },
 
-  updateLabel(
+  async updateLabel(
     owner: string,
     repo: string,
     currentName: string,
-    payload: { name: string; color: string; description?: string },
+    payload: GitHubLabel,
     options?: RequestOptions
   ) {
     return executeWithRetry(
@@ -115,7 +135,7 @@ export const githubRequest = {
     );
   },
 
-  deleteLabel(
+  async deleteLabel(
     owner: string,
     repo: string,
     name: string,
