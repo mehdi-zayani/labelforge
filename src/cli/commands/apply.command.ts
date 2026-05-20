@@ -16,7 +16,8 @@ export async function applyCommand(
     path.resolve(process.cwd(), templatePath)
   ) as GitHubLabelTemplate;
 
-  const githubLabels = await githubRequest.fetchLabels(owner, repo) as any[];
+  // FIX: no any, no cast
+  const githubLabels = await githubRequest.fetchLabels(owner, repo);
 
   const labels = template.templates.flatMap((t) => t.labels ?? []);
 

@@ -12,21 +12,13 @@ type RequestOptions = {
 export type GitHubLabel = {
   name: string;
   color: string;
-  description?: string | null;
-};
-
-type GitHubLabelListResponse = {
-  data: GitHubLabel[];
+  description: string | null;
 };
 
 function sleep(ms: number) {
   return new Promise((r) => setTimeout(r, ms));
 }
 
-/**
- * FIX IMPORTANT:
- * fn must preserve type T instead of any
- */
 async function executeWithRetry<T>(
   fn: () => Promise<T>,
   context: string,
@@ -41,10 +33,10 @@ async function executeWithRetry<T>(
     try {
       logger.debug(`[GitHub] ${context} attempt ${attempt + 1}`);
 
-      const response = await withTimeout(fn(), timeoutMs);
+      const response: any = await withTimeout(fn(), timeoutMs);
 
-      if (response && typeof response === "object" && "headers" in response) {
-        handleRateLimit((response as any).headers);
+      if (response?.headers) {
+        handleRateLimit(response.headers);
       }
 
       return response;
@@ -76,28 +68,26 @@ async function executeWithRetry<T>(
 }
 
 /**
- * CENTRAL GITHUB WRAPPER (SDK LAYER)
+ * GITHUB WRAPPER SIMPLE (NO OVER-ABSTRACTION)
  */
 export const githubRequest = {
-  async fetchLabels(
-    owner: string,
-    repo: string,
-    options?: RequestOptions
-  ): Promise<GitHubLabel[]> {
-    const res = await executeWithRetry<GitHubLabelListResponse>(
+  async fetchLabels(owner: string, repo: string): Promise<GitHubLabel[]> {
+    const res = await executeWithRetry<any>(
       () => octokit.issues.listLabelsForRepo({ owner, repo }),
-      "fetchLabels",
-      options
+      "fetchLabels"
     );
 
-    return res.data;
+    return res.data.map((l: any) => ({
+      name: l.name,
+      color: l.color,
+      description: l.description ?? null,
+    }));
   },
 
   async createLabel(
     owner: string,
     repo: string,
-    payload: GitHubLabel,
-    options?: RequestOptions
+    payload: GitHubLabel
   ) {
     return executeWithRetry(
       () =>
@@ -108,8 +98,7 @@ export const githubRequest = {
           color: payload.color,
           description: payload.description ?? "",
         }),
-      "createLabel",
-      options
+      "createLabel"
     );
   },
 
@@ -117,8 +106,7 @@ export const githubRequest = {
     owner: string,
     repo: string,
     currentName: string,
-    payload: GitHubLabel,
-    options?: RequestOptions
+    payload: GitHubLabel
   ) {
     return executeWithRetry(
       () =>
@@ -130,21 +118,14 @@ export const githubRequest = {
           color: payload.color,
           description: payload.description ?? "",
         }),
-      "updateLabel",
-      options
+      "updateLabel"
     );
   },
 
-  async deleteLabel(
-    owner: string,
-    repo: string,
-    name: string,
-    options?: RequestOptions
-  ) {
+  async deleteLabel(owner: string, repo: string, name: string) {
     return executeWithRetry(
       () => octokit.issues.deleteLabel({ owner, repo, name }),
-      "deleteLabel",
-      options
+      "deleteLabel"
     );
   },
 };
