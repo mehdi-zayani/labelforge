@@ -1,7 +1,7 @@
 import { fetchLabels } from "./github/labels.api.js";
 import { loadLabelConfig } from "./loaders/load-label-config.js";
 import { compareLabels } from "./core/label-compare.service.js";
-import { syncLabels } from "./services/sync.service.js";
+import { syncLabels } from "./application/sync.usecase.js";
 
 async function bootstrap() {
   console.log("[INFO] Fetching GitHub labels...");
