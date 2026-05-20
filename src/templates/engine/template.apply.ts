@@ -1,4 +1,4 @@
-import { githubRequest } from "../../github/request/github-request.wrapper.js";
+import { githubRequest } from "../../github/http/github-request.wrapper.js";
 
 export async function applyTemplate(
   owner: string,

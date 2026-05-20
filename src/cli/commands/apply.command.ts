@@ -1,7 +1,7 @@
 import { parseTemplate } from "../../templates/parser/template.parser.js";
 import { diffTemplate } from "../../templates/engine/template.diff.js";
 import { applyTemplate } from "../../templates/engine/template.apply.js";
-import { githubRequest } from "../../github/request/github-request.wrapper.js";
+import { githubRequest } from "../../github/http/github-request.wrapper.js";
 
 import path from "path";
 import type { GitHubLabelTemplate } from "../../templates/types/template.types.js";

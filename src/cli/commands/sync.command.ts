@@ -2,14 +2,9 @@ import chalk from "chalk";
 import figlet from "figlet";
 import prompts from "prompts";
 
-import { fetchLabels } from "../../github/labels.api.js";
-import { loadLabelConfig } from "../../loaders/load-label-config.js";
-import { compareLabels } from "../../core/label-compare.service.js";
-import { syncLabels } from "../../application/sync.usecase.js";
-
 import { validateRepositoryAccess } from "../../github/repo.validator.js";
-
 import { logger } from "../../utils/logger.js";
+import { runSyncPipeline } from "../../application/sync.pipeline.usecase.js";
 
 export async function syncCommand(
   owner: string,
@@ -37,24 +32,16 @@ export async function syncCommand(
     return;
   }
 
-  logger.info("STEP 1 - Fetching GitHub labels...");
+  logger.info("STEP 1 - Running sync pipeline...");
 
-  const localLabels = loadLabelConfig();
-  const remoteLabels = await fetchLabels(owner, repo);
-
-  logger.success(`Local labels loaded: ${localLabels.length}`);
-  logger.success(`Remote labels fetched: ${remoteLabels.length}`);
-
-  logger.info("STEP 2 - Comparing labels...");
-
-  const diff = compareLabels(localLabels, remoteLabels);
+  const diff = await runSyncPipeline(owner, repo, dryRun);
 
   logger.warn("Synchronization summary");
   logger.info(`To create : ${diff.toCreate.length}`);
   logger.info(`To update : ${diff.toUpdate.length}`);
   logger.info(`To delete : ${diff.toDelete.length}`);
 
-  logger.info("STEP 3 - Sync execution...");
+  logger.info("STEP 2 - Sync execution...");
 
   if (dryRun) {
     logger.warn("DRY-RUN MODE ENABLED - no changes will be applied");
@@ -71,8 +58,6 @@ export async function syncCommand(
       return;
     }
   }
-
-  await syncLabels(owner, repo, diff, dryRun);
 
   logger.success("Synchronization completed successfully\n");
 }
