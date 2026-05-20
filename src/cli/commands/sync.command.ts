@@ -4,7 +4,7 @@ import prompts from "prompts";
 
 import { fetchLabels } from "../../github/labels.api.js";
 import { loadLabelConfig } from "../../loaders/load-label-config.js";
-import { compareLabels } from "../../services/label-compare.service.js";
+import { compareLabels } from "../../core/label-compare.service.js";
 import { syncLabels } from "../../services/sync.service.js";
 
 import { validateRepositoryAccess } from "../../github/repo.validator.js";
