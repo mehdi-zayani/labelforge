@@ -54,7 +54,7 @@ async function executeWithRetry<T>(
         throw error;
       }
 
-      const delay = 500 * Math.pow(2, attempt);
+      const delay = Math.min(1000, 500 * Math.pow(2, attempt));
 
       logger.warn(
         `[GitHub] retrying ${context} in ${delay}ms (attempt ${attempt + 1})`
@@ -66,7 +66,6 @@ async function executeWithRetry<T>(
 
   throw lastError;
 }
-
 
 export const githubRequest = {
   async fetchLabels(owner: string, repo: string): Promise<GitHubLabel[]> {
@@ -82,11 +81,7 @@ export const githubRequest = {
     }));
   },
 
-  async createLabel(
-    owner: string,
-    repo: string,
-    payload: GitHubLabel
-  ) {
+  async createLabel(owner: string, repo: string, payload: GitHubLabel) {
     return executeWithRetry(
       () =>
         octokit.issues.createLabel({
