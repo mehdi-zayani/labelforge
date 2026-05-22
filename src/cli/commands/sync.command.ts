@@ -2,7 +2,7 @@ import chalk from "chalk";
 import figlet from "figlet";
 import prompts from "prompts";
 
-import { validateRepositoryAccess } from "../../github/repo.validator.js";
+import { validateRepositoryAccess } from "../../github/validation/repo.validator.js";
 import { logger } from "../../utils/logger.js";
 import { runSyncPipeline } from "../../application/sync.pipeline.usecase.js";
 

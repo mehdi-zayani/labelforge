@@ -1,7 +1,7 @@
-import { octokit } from "../client.js";
+import { octokit } from "../client/github.client.js";
 import { logger } from "../../utils/logger.js";
-import { handleGitHubError } from "../github-error.handler.js";
-import { handleRateLimit } from "../rate-limit.handler.js";
+import { handleGitHubError } from "../handlers/github-error.handler.js";
+import { handleRateLimit } from "../handlers/rate-limit.handler.js";
 import { withTimeout } from "./timeout.js";
 
 type RequestOptions = {

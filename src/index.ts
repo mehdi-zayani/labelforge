@@ -1,4 +1,4 @@
-import { loadLabelConfig } from "./loaders/load-label-config.js";
+import { loadLabelConfig } from "./infrastructure/config/load-label-config.js";
 import { runSyncPipeline } from "./application/sync.pipeline.usecase.js";
 
 async function bootstrap() {

@@ -1,5 +1,5 @@
-import { loadLabelConfig } from "../loaders/load-label-config.js";
-import { fetchLabels } from "../github/labels.api.js";
+import { loadLabelConfig } from "../infrastructure/config/load-label-config.js";
+import { fetchLabels } from "../github/api/labels.api.js";
 import { compareLabels } from "./label-compare.usecase.js";
 import { syncLabels } from "./sync.usecase.js";
 

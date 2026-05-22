@@ -4,7 +4,7 @@ import {
   createLabel,
   deleteLabel,
   updateLabel
-} from "../github/labels.api.js";
+} from "../github/api/labels.api.js";
 
 import { logger } from "../utils/logger.js";
 

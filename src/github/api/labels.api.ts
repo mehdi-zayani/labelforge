@@ -1,7 +1,7 @@
-import { handleGitHubError } from "./github-error.handler.js";
+import { handleGitHubError } from "../handlers/github-error.handler.js";
 
-import { logger } from "../utils/logger.js";
-import { githubRequest } from "./http/github-request.wrapper.js";
+import { logger } from "../../utils/logger.js";
+import { githubRequest } from "../http/github-request.wrapper.js";
 
 export async function fetchLabels(owner: string, repo: string) {
   try {
