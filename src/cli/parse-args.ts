@@ -4,7 +4,7 @@ export function parseArgs(args: string[]) {
     owner: undefined as string | undefined,
     repo: undefined as string | undefined,
     templatePath: undefined as string | undefined,
-    dryRun: false,
+    dryRun: args.includes("--dry-run") || args.includes("-d"),
     verbose: false,
   };
 

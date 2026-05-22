@@ -1,31 +1,20 @@
-import { loadLabelConfig } from "./infrastructure/config/load-label-config.js";
-import { runSyncPipeline } from "./application/sync.pipeline.usecase.js";
+import { parseArgs } from "./cli/parse-args.js";
+import { syncCommand } from "./cli/commands/sync.command.js";
 
-async function bootstrap() {
-  console.log("[INFO] Fetching GitHub labels...");
+async function main() {
+  const args = parseArgs(process.argv.slice(2));
 
-  try {
-    const localLabels = loadLabelConfig();
+  if (args.command === "sync") {
+    if (!args.owner || !args.repo) {
+      console.error("Missing owner/repo");
+      process.exit(1);
+    }
 
-    console.log(`[SUCCESS] Loaded ${localLabels.length} local labels`);
-
-    const diff = await runSyncPipeline(
-      "mehdi-zayani",
-      "testing-repo",
-      false
-    );
-
-    console.log("[COMPARE RESULT]", {
-      create: diff.toCreate.length,
-      update: diff.toUpdate.length,
-      delete: diff.toDelete.length
-    });
-
-    console.log("[SUCCESS] GitHub labels synchronized");
-
-  } catch (error) {
-    console.error("[ERROR] Failed to process labels", error);
+    await syncCommand(args.owner, args.repo, args.dryRun);
+    return;
   }
+
+  console.error("Unknown command");
 }
 
-bootstrap();
+main();
