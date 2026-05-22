@@ -1,7 +1,7 @@
-import { octokit } from "./client.js";
-import { handleGitHubError } from "./github-error.handler.js";
+import { octokit } from "../client/github.client.js";
+import { handleGitHubError } from "../handlers/github-error.handler.js";
 
-import { logger } from "../utils/logger.js";
+import { logger } from "../../utils/logger.js";
 
 export async function validateRepositoryAccess(
   owner: string,

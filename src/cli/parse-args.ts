@@ -3,6 +3,7 @@ export function parseArgs(args: string[]) {
     command: undefined as string | undefined,
     owner: undefined as string | undefined,
     repo: undefined as string | undefined,
+    templatePath: undefined as string | undefined,
     dryRun: false,
     verbose: false,
   };
@@ -10,11 +11,14 @@ export function parseArgs(args: string[]) {
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
 
-    if (arg === "sync") result.command = "sync";
+    if (arg === "sync" || arg === "apply") result.command = arg;
+
     else if (arg === "--dry-run") result.dryRun = true;
     else if (arg === "--verbose" || arg === "-v") result.verbose = true;
+
     else if (!result.owner) result.owner = arg;
     else if (!result.repo) result.repo = arg;
+    else if (!result.templatePath) result.templatePath = arg;
   }
 
   return result;

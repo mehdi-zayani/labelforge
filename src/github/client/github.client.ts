@@ -1,7 +1,7 @@
 import { Octokit } from "@octokit/rest";
 
-import { getGitHubToken } from "../env/env.js";
-import { logger } from "../utils/logger.js";
+import { getGitHubToken } from "../../env/env.js";
+import { logger } from "../../utils/logger.js";
 
 const token = getGitHubToken();
 

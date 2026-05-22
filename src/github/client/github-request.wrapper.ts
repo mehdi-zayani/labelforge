@@ -1,12 +1,18 @@
-import { octokit } from "../client.js";
-import { logger } from "../../utils/logger.js";
-import { handleGitHubError } from "../github-error.handler.js";
-import { handleRateLimit } from "../rate-limit.handler.js";
-import { withTimeout } from "./timeout.js";
+import { octokit } from "./github.client.js";
+import { logger } from "./../../utils/logger.js";
+import { handleGitHubError } from "./../handlers/github-error.handler.js";
+import { handleRateLimit } from "./../handlers/rate-limit.handler.js";
+import { withTimeout } from "./../resilience/timeout.js";
 
 type RequestOptions = {
   timeoutMs?: number;
   retries?: number;
+};
+
+export type GitHubLabel = {
+  name: string;
+  color: string;
+  description: string | null;
 };
 
 function sleep(ms: number) {
@@ -14,30 +20,30 @@ function sleep(ms: number) {
 }
 
 async function executeWithRetry<T>(
-  fn: () => Promise<any>,
+  fn: () => Promise<T>,
   context: string,
   options?: RequestOptions
 ): Promise<T> {
   const retries = options?.retries ?? 2;
   const timeoutMs = options?.timeoutMs ?? 10000;
 
-  let lastError: any;
+  let lastError: unknown;
 
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
       logger.debug(`[GitHub] ${context} attempt ${attempt + 1}`);
 
-      const response = await withTimeout(fn(), timeoutMs);
+      const response: any = await withTimeout(fn(), timeoutMs);
 
       if (response?.headers) {
         handleRateLimit(response.headers);
       }
 
       return response;
-    } catch (error: any) {
+    } catch (error: unknown) {
       lastError = error;
 
-      const status = error?.status;
+      const status = (error as any)?.status;
 
       const isRetryable =
         status === 429 || (status >= 500 && status < 600);
@@ -61,23 +67,25 @@ async function executeWithRetry<T>(
   throw lastError;
 }
 
-/**
- * CENTRAL GITHUB WRAPPER (SDK LAYER)
- */
+
 export const githubRequest = {
-  fetchLabels(owner: string, repo: string, options?: RequestOptions) {
-    return executeWithRetry(
+  async fetchLabels(owner: string, repo: string): Promise<GitHubLabel[]> {
+    const res = await executeWithRetry<any>(
       () => octokit.issues.listLabelsForRepo({ owner, repo }),
-      "fetchLabels",
-      options
+      "fetchLabels"
     );
+
+    return res.data.map((l: any) => ({
+      name: l.name,
+      color: l.color,
+      description: l.description ?? null,
+    }));
   },
 
-  createLabel(
+  async createLabel(
     owner: string,
     repo: string,
-    payload: { name: string; color: string; description?: string },
-    options?: RequestOptions
+    payload: GitHubLabel
   ) {
     return executeWithRetry(
       () =>
@@ -88,17 +96,15 @@ export const githubRequest = {
           color: payload.color,
           description: payload.description ?? "",
         }),
-      "createLabel",
-      options
+      "createLabel"
     );
   },
 
-  updateLabel(
+  async updateLabel(
     owner: string,
     repo: string,
     currentName: string,
-    payload: { name: string; color: string; description?: string },
-    options?: RequestOptions
+    payload: GitHubLabel
   ) {
     return executeWithRetry(
       () =>
@@ -110,21 +116,14 @@ export const githubRequest = {
           color: payload.color,
           description: payload.description ?? "",
         }),
-      "updateLabel",
-      options
+      "updateLabel"
     );
   },
 
-  deleteLabel(
-    owner: string,
-    repo: string,
-    name: string,
-    options?: RequestOptions
-  ) {
+  async deleteLabel(owner: string, repo: string, name: string) {
     return executeWithRetry(
       () => octokit.issues.deleteLabel({ owner, repo, name }),
-      "deleteLabel",
-      options
+      "deleteLabel"
     );
   },
 };

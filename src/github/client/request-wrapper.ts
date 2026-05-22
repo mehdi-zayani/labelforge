@@ -1,5 +1,5 @@
-import { retry } from "./retry.js";
-import { octokit } from "../client.js";
+import { retry } from "../resilience/retry.js";
+import { octokit } from "./github.client.js";
 
 export const githubRequest = {
   async fetchLabels(owner: string, repo: string) {

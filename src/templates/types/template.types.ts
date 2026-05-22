@@ -1,15 +1,15 @@
-export type LabelTemplate = {
+export type GitHubLabel = {
   name: string;
   color: string;
   description?: string;
 };
 
-export type TemplateGroup = {
+export type GitHubTemplateGroup = {
   group: string;
-  labels: LabelTemplate[];
+  labels: GitHubLabel[];
 };
 
 export type GitHubLabelTemplate = {
   version: string;
-  templates: TemplateGroup[];
+  templates: GitHubTemplateGroup[];
 };
