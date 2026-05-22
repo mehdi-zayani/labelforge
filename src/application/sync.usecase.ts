@@ -9,11 +9,13 @@ import {
 import { logger } from "../utils/logger.js";
 
 export async function syncLabels(
+  
   owner: string,
   repo: string,
   diff: LabelComparison,
   dryRun: boolean = true
 ) {
+   if (dryRun) return;
   // CREATE
 for (const label of diff.toCreate) {
   if (dryRun) {
