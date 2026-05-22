@@ -35,7 +35,7 @@ export async function syncCommand(
 
   logger.info("STEP 1 - Running sync pipeline...");
 
-  const diff = await runSyncPipeline(owner, repo, dryRun);
+  const diff = await runSyncPipeline(owner, repo, false);
 
   logger.warn("Synchronization summary");
   logger.info(`To create : ${diff.toCreate.length}`);
