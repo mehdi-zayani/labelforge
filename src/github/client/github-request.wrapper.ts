@@ -1,8 +1,8 @@
-import { octokit } from "../client/github.client.js";
-import { logger } from "../../utils/logger.js";
-import { handleGitHubError } from "../handlers/github-error.handler.js";
-import { handleRateLimit } from "../handlers/rate-limit.handler.js";
-import { withTimeout } from "./timeout.js";
+import { octokit } from "./github.client.js";
+import { logger } from "./../../utils/logger.js";
+import { handleGitHubError } from "./../handlers/github-error.handler.js";
+import { handleRateLimit } from "./../handlers/rate-limit.handler.js";
+import { withTimeout } from "./../resilience/timeout.js";
 
 type RequestOptions = {
   timeoutMs?: number;
@@ -67,9 +67,7 @@ async function executeWithRetry<T>(
   throw lastError;
 }
 
-/**
- * GITHUB WRAPPER SIMPLE (NO OVER-ABSTRACTION)
- */
+
 export const githubRequest = {
   async fetchLabels(owner: string, repo: string): Promise<GitHubLabel[]> {
     const res = await executeWithRetry<any>(

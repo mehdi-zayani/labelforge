@@ -1,7 +1,7 @@
-import { githubRequest } from "../http/github-request.wrapper.js";
+import { githubRequest } from "../client/github-request.wrapper.js";
 import { logger } from "../../utils/logger.js";
 import { handleGitHubError } from "../handlers/github-error.handler.js";
-import { handleRateLimit } from "../handlers/rate-limit.handler.js";
+
 
 export type GitHubLabel = {
   name: string;

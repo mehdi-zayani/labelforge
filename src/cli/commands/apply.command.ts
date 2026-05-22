@@ -1,7 +1,7 @@
 import { parseTemplate } from "../../templates/parser/template.parser.js";
 import { diffTemplate } from "../../templates/engine/template.diff.js";
 import { applyTemplate } from "../../templates/engine/template.apply.js";
-import { githubRequest } from "../../github/http/github-request.wrapper.js";
+import { githubRequest } from "../../github/client/github-request.wrapper.js";
 
 import path from "path";
 import type { GitHubLabelTemplate } from "../../templates/types/template.types.js";
@@ -16,7 +16,7 @@ export async function applyCommand(
     path.resolve(process.cwd(), templatePath)
   ) as GitHubLabelTemplate;
 
-  // FIX: no any, no cast
+
   const githubLabels = await githubRequest.fetchLabels(owner, repo);
 
   const labels = template.templates.flatMap((t) => t.labels ?? []);
