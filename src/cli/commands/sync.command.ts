@@ -67,6 +67,5 @@ if (!response.confirmed) {
 
 await syncLabels(owner, repo, diff, false);
 
-logger.success("Synchronization completed successfully");
   logger.success("Synchronization completed successfully\n");
 }
