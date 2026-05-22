@@ -12,7 +12,7 @@ export async function syncLabels(
   owner: string,
   repo: string,
   diff: LabelComparison,
-  dryRun: boolean = false
+  dryRun: boolean = true
 ) {
   // CREATE
 for (const label of diff.toCreate) {
