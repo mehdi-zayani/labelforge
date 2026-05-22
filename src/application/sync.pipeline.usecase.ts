@@ -19,6 +19,6 @@ export async function runSyncPipeline(
 const diff = compareLabels(normalizedLocalLabels, remoteLabels);
 
   
-
+  await syncLabels(owner, repo, diff, dryRun);
   return diff;
 }

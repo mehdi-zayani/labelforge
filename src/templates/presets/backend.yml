@@ -4,9 +4,12 @@ templates:
   - group: backend
     labels:
       - name: api
-        color: blue
+        color: "1D76DB"
         description: REST API
+
       - name: service
-        color: green
+        color: "2EA44F"
+
       - name: bug
-        color: red
+        color: "D73A4A"
+   

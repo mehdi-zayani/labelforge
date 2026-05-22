@@ -9,13 +9,41 @@ const normalize = (labels: GitHubLabel[]): Label[] =>
     description: l.description ?? ""
   }));
 
-export function compareLabels(local: Label[], remote: GitHubLabel[]): LabelComparison {
+export function compareLabels(
+  local: Label[],
+  remote: GitHubLabel[]
+): LabelComparison {
   const normalizedRemote = normalize(remote);
 
-
   return {
-    toCreate: [],
-    toUpdate: [],
-    toDelete: []
+    toCreate: local.filter(
+      (l) => !normalizedRemote.some((r) => r.name === l.name)
+    ),
+
+    toUpdate: local
+      .map((localLabel) => {
+        const remoteLabel = normalizedRemote.find(
+          (r) => r.name === localLabel.name
+        );
+
+        if (!remoteLabel) return null;
+
+        const changed =
+          remoteLabel.color !== localLabel.color ||
+          remoteLabel.description !== localLabel.description;
+
+        if (!changed) return null;
+
+        return {
+          current: remoteLabel,
+          next: localLabel
+        };
+      })
+      .filter(Boolean) as LabelComparison["toUpdate"],
+
+    toDelete: normalizedRemote.filter(
+      (remoteLabel) =>
+        !local.some((localLabel) => localLabel.name === remoteLabel.name)
+    )
   };
 }
