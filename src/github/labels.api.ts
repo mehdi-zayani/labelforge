@@ -1,20 +1,17 @@
 import { handleGitHubError } from "./github-error.handler.js";
-import { handleRateLimit } from "./rate-limit.handler.js";
 
 import { logger } from "../utils/logger.js";
-import { githubRequest } from "./resilience/request-wrapper.js";
+import { githubRequest } from "./http/github-request.wrapper.js";
 
 export async function fetchLabels(owner: string, repo: string) {
   try {
     logger.debug(`Fetching labels from ${owner}/${repo}`);
 
-    const response = await githubRequest.fetchLabels(owner, repo);
+    const labels = await githubRequest.fetchLabels(owner, repo);
 
-    handleRateLimit(response.headers);
+    logger.success(`Fetched ${labels.length} GitHub labels`);
 
-    logger.success(`Fetched ${response.data.length} GitHub labels`);
-
-    return response.data;
+    return labels;
   } catch (error) {
     handleGitHubError(error, "fetchLabels");
     throw error;
@@ -29,13 +26,11 @@ export async function createLabel(
   try {
     logger.debug(`Creating label ${label.name}`);
 
-    const response = await githubRequest.createLabel(owner, repo, {
+    await githubRequest.createLabel(owner, repo, {
       name: label.name,
       color: label.color,
       description: label.description ?? "",
     });
-
-    handleRateLimit(response.headers);
 
     logger.success(`Label created: ${label.name}`);
   } catch (error) {
@@ -53,7 +48,7 @@ export async function updateLabel(
   try {
     logger.debug(`Updating label ${currentName}`);
 
-    const response = await githubRequest.updateLabel(
+    await githubRequest.updateLabel(
       owner,
       repo,
       currentName,
@@ -63,8 +58,6 @@ export async function updateLabel(
         description: label.description ?? "",
       }
     );
-
-    handleRateLimit(response.headers);
 
     logger.success(`Label updated: ${label.name}`);
   } catch (error) {
@@ -81,9 +74,7 @@ export async function deleteLabel(
   try {
     logger.debug(`Deleting label ${name}`);
 
-    const response = await githubRequest.deleteLabel(owner, repo, name);
-
-    handleRateLimit(response.headers);
+    await githubRequest.deleteLabel(owner, repo, name);
 
     logger.success(`Label deleted: ${name}`);
   } catch (error) {
