@@ -8,22 +8,15 @@ export async function runSyncPipeline(
   repo: string,
   dryRun: boolean
 ) {
-    const localLabels = loadLabelConfig();
-    const remoteLabels = await fetchLabels(owner, repo);
+  const localLabels = loadLabelConfig();
+  const remoteLabels = await fetchLabels(owner, repo);
 
-    const normalizedLocal = localLabels.map((l) => ({
-    name: l.name,
-    color: l.color,
-    description: l.description ?? "",
+    const normalizedLocalLabels = localLabels.map((l) => ({
+      ...l,
+      description: l.description ?? ""
     }));
 
-    const normalizedRemote = remoteLabels.map((l) => ({
-    name: l.name,
-    color: l.color,
-    description: l.description ?? "",
-    }));
-
-    const diff = compareLabels(normalizedLocal, normalizedRemote);
+const diff = compareLabels(normalizedLocalLabels, remoteLabels);
 
   await syncLabels(owner, repo, diff, dryRun);
 

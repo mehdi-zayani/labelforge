@@ -1,12 +1,16 @@
-import { handleGitHubError } from "../handlers/github-error.handler.js";
-
-import { logger } from "../../utils/logger.js";
 import { githubRequest } from "../http/github-request.wrapper.js";
+import { logger } from "../../utils/logger.js";
+import { handleGitHubError } from "../handlers/github-error.handler.js";
+import { handleRateLimit } from "../handlers/rate-limit.handler.js";
 
-export async function fetchLabels(owner: string, repo: string) {
+export type GitHubLabel = {
+  name: string;
+  color: string;
+  description: string | null;
+};
+
+export async function fetchLabels(owner: string, repo: string): Promise<GitHubLabel[]> {
   try {
-    logger.debug(`Fetching labels from ${owner}/${repo}`);
-
     const labels = await githubRequest.fetchLabels(owner, repo);
 
     logger.success(`Fetched ${labels.length} GitHub labels`);
@@ -24,8 +28,6 @@ export async function createLabel(
   label: { name: string; color: string; description?: string }
 ) {
   try {
-    logger.debug(`Creating label ${label.name}`);
-
     await githubRequest.createLabel(owner, repo, {
       name: label.name,
       color: label.color,
@@ -46,18 +48,11 @@ export async function updateLabel(
   label: { name: string; color: string; description?: string }
 ) {
   try {
-    logger.debug(`Updating label ${currentName}`);
-
-    await githubRequest.updateLabel(
-      owner,
-      repo,
-      currentName,
-      {
-        name: label.name,
-        color: label.color,
-        description: label.description ?? "",
-      }
-    );
+    await githubRequest.updateLabel(owner, repo, currentName, {
+      name: label.name,
+      color: label.color,
+      description: label.description ?? "",
+    });
 
     logger.success(`Label updated: ${label.name}`);
   } catch (error) {
@@ -66,14 +61,8 @@ export async function updateLabel(
   }
 }
 
-export async function deleteLabel(
-  owner: string,
-  repo: string,
-  name: string
-) {
+export async function deleteLabel(owner: string, repo: string, name: string) {
   try {
-    logger.debug(`Deleting label ${name}`);
-
     await githubRequest.deleteLabel(owner, repo, name);
 
     logger.success(`Label deleted: ${name}`);

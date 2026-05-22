@@ -1,27 +1,21 @@
-import type { GitHubLabel } from "../github/http/github-request.wrapper.js";
-import type { LabelComparison } from "../domain/label-comparison.js";
+import type { Label } from "../domain/label.js";
+import type { GitHubLabel } from "../github/api/labels.api.js";
+import type { LabelComparison } from "../domain/label-compare.js";
 
-export function compareLabels(
-  local: GitHubLabel[],
-  remote: GitHubLabel[]
-): LabelComparison {
-  const toCreate: GitHubLabel[] = [];
-  const toUpdate: any[] = [];
-  const toDelete: GitHubLabel[] = [];
+const normalize = (labels: GitHubLabel[]): Label[] =>
+  labels.map((l) => ({
+    name: l.name,
+    color: l.color,
+    description: l.description ?? ""
+  }));
 
-  for (const l of local) {
-    const found = remote.find((r) => r.name === l.name);
-    if (!found) toCreate.push(l);
-  }
+export function compareLabels(local: Label[], remote: GitHubLabel[]): LabelComparison {
+  const normalizedRemote = normalize(remote);
 
-  for (const r of remote) {
-    const found = local.find((l) => l.name === r.name);
-    if (!found) toDelete.push(r);
-  }
 
   return {
-    toCreate,
-    toUpdate,
-    toDelete,
+    toCreate: [],
+    toUpdate: [],
+    toDelete: []
   };
 }

@@ -1,4 +1,4 @@
-import type { LabelComparison } from "../domain/label-comparison.js";
+import type { LabelComparison } from "../domain/label-compare.js";
 
 import {
   createLabel,
@@ -15,46 +15,45 @@ export async function syncLabels(
   dryRun: boolean = false
 ) {
   // CREATE
-  for (const label of diff.toCreate) {
-    if (dryRun) {
-      logger.debug(`[DRY-RUN][CREATE] ${label.name}`);
-      continue;
-    }
-
-    const payload: any = {
-      name: label.name,
-      color: label.color
-    };
-
-    if (label.description) {
-      payload.description = label.description;
-    }
-
-    await createLabel(owner, repo, payload);
-
-    logger.success(`CREATE ${label.name}`);
+for (const label of diff.toCreate) {
+  if (dryRun) {
+    logger.debug(`[DRY-RUN][CREATE] ${label.name}`);
+    continue;
   }
 
+  const payload: any = {
+    name: label.name,
+    color: label.color,
+  };
+
+  if (label.description) {
+    payload.description = label.description;
+  }
+
+  await createLabel(owner, repo, payload);
+
+  logger.success(`CREATE ${label.name}`);
+}
   // UPDATE
-  for (const label of diff.toUpdate) {
-    if (dryRun) {
-      logger.debug(`[DRY-RUN][UPDATE] ${label.name}`);
-      continue;
-    }
-
-    const payload: any = {
-      name: label.name,
-      color: label.color
-    };
-
-    if (label.description) {
-      payload.description = label.description;
-    }
-
-    await updateLabel(owner, repo, label.name, payload);
-
-    logger.success(`UPDATE ${label.name}`);
+ for (const item of diff.toUpdate) {
+  if (dryRun) {
+    logger.debug(`[DRY-RUN][UPDATE] ${item.next.name}`);
+    continue;
   }
+
+  const payload: any = {
+    name: item.next.name,
+    color: item.next.color,
+  };
+
+  if (item.next.description) {
+    payload.description = item.next.description;
+  }
+
+  await updateLabel(owner, repo, item.current.name, payload);
+
+  logger.success(`UPDATE ${item.next.name}`);
+}
 
   // DELETE
   for (const label of diff.toDelete) {
