@@ -19,7 +19,13 @@ export async function applyCommand(
 
   const githubLabels = await githubRequest.fetchLabels(owner, repo);
 
-  const labels = template.templates.flatMap((t) => t.labels ?? []);
+  const labels = template.templates.flatMap((t) =>
+  (t.labels ?? []).map((l) => ({
+    name: l.name,
+    color: l.color,
+    description: l.description ?? ""
+  }))
+);
 
   const diff = diffTemplate(labels, githubLabels);
 
@@ -28,5 +34,8 @@ export async function applyCommand(
   console.log("To update:", diff.toUpdate.map((l) => l.next.name));
   console.log("To ignore:", diff.toIgnore.map((l) => l.name));
 
-  await applyTemplate(owner, repo, diff, dryRun);
+  
+if (!dryRun) {
+  await applyTemplate(owner, repo, diff, false);
+}
 }

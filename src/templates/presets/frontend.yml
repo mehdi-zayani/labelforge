@@ -1,0 +1,8 @@
+version: "1.0"
+
+templates:
+  - group: frontend
+    labels:
+      - name: html
+        color: "1D76DB"
+        description: "Hypertext Markup Language"

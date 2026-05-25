@@ -5,11 +5,11 @@ import prompts from "prompts";
 import { validateRepositoryAccess } from "../../github/validation/repo.validator.js";
 import { logger } from "../../utils/logger.js";
 import { runSyncPipeline } from "../../application/sync.pipeline.usecase.js";
-import { syncLabels } from "../../application/sync.usecase.js";
 
 export async function syncCommand(
   owner: string,
   repo: string,
+  templatePath: string,
   dryRun: boolean
 ) {
   console.log(
@@ -20,52 +20,44 @@ export async function syncCommand(
     )
   );
 
-  logger.debug("GitHub Labels Synchronization CLI");
-  logger.debug("Version 0.1.0");
-  logger.debug("Developed by Mehdi Zayani\n");
+  logger.info("STEP 0 - Validate repo");
 
-  logger.info("STEP 0 - Validating repository access...");
+  const ok = await validateRepositoryAccess(owner, repo);
 
-  const isRepoValid = await validateRepositoryAccess(owner, repo);
-
-  if (!isRepoValid) {
-    logger.error("Synchronization aborted - invalid repository access");
+  if (!ok) {
+    logger.error("Invalid repository");
     return;
   }
 
-  logger.info("STEP 1 - Running sync pipeline...");
+  logger.info("STEP 1 - Run sync pipeline");
 
-  const diff = await runSyncPipeline(owner, repo, false);
+  const result = await runSyncPipeline(
+    owner,
+    repo,
+    templatePath,
+    dryRun
+  );
 
-  logger.warn("Synchronization summary");
-  logger.info(`To create : ${diff.toCreate.length}`);
-  logger.info(`To update : ${diff.toUpdate.length}`);
-  logger.info(`To delete : ${diff.toDelete.length}`);
+  logger.warn("Summary");
+  logger.info(`Remote: ${result.remoteCount}`);
+  logger.info(`Template: ${result.templateCount}`);
 
-logger.info("STEP 2 - Sync execution...");
+  if (dryRun) {
+    logger.warn("Dry-run mode");
+    return;
+  }
 
-if (dryRun) {
-  logger.warn("DRY-RUN MODE ENABLED - no changes will be applied");
-  logger.info(`To create: ${diff.toCreate.length}`);
-    logger.info(`To update: ${diff.toUpdate.length}`);
-    logger.info(`To delete: ${diff.toDelete.length}`);
-  return;
-}
+  const response = await prompts({
+    type: "confirm",
+    name: "confirm",
+    message: "Apply changes?",
+    initial: false,
+  });
 
-const response = await prompts({
-  type: "confirm",
-  name: "confirmed",
-  message: "Apply changes to GitHub labels?",
-  initial: false,
-});
+  if (!response.confirm) {
+    logger.warn("Cancelled");
+    return;
+  }
 
-if (!response.confirmed) {
-  logger.warn("Synchronization cancelled by user");
-  return;
-}
-
-
-await syncLabels(owner, repo, diff, false);
-
-  logger.success("Synchronization completed successfully\n");
+  logger.success("Done");
 }

@@ -1,19 +1,15 @@
-export async function cliRunner(command: string, context: any) {
- switch (command) {
-  case "sync":
-    const { syncCommand } = await import("../commands/sync.command.js");
-    return syncCommand(context.owner, context.repo, context.dryRun);
+import { syncCommand } from "../commands/sync.command.js";
 
-  case "apply":
-    const { applyCommand } = await import("../commands/apply.command.js");
-    return applyCommand(
-      context.owner,
-      context.repo,
-      context.templatePath,
-      context.dryRun
-    );
-
-  default:
-    throw new Error(`Unknown command: ${command}`);
-}
+export async function cliRunner(context: {
+  owner: string;
+  repo: string;
+  templatePath: string;
+  dryRun: boolean;
+}) {
+  return syncCommand(
+    context.owner,
+    context.repo,
+    context.templatePath,
+    context.dryRun
+  );
 }

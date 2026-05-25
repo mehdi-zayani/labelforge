@@ -1,20 +1,26 @@
-import { parseArgs } from "./cli/parse-args.js";
 import { syncCommand } from "./cli/commands/sync.command.js";
 
 async function main() {
-  const args = parseArgs(process.argv.slice(2));
+  const args = process.argv.slice(2);
 
-  if (args.command === "sync") {
-    if (!args.owner || !args.repo) {
-      console.error("Missing owner/repo");
-      process.exit(1);
-    }
+  const owner = args[1];
+  const repo = args[2];
+  const templateInput = args[3];
+  const dryRun = args[4] === "true";
 
-    await syncCommand(args.owner, args.repo, args.dryRun);
-    return;
+  if (!owner || !repo || !templateInput) {
+    throw new Error("Usage: sync owner repo template [dryRun]");
   }
 
-  console.error("Unknown command");
+  const templatePath =
+    templateInput.endsWith(".yml") || templateInput.endsWith(".yaml")
+      ? templateInput
+      : `src/templates/presets/${templateInput}.yml`;
+
+  await syncCommand(owner, repo, templatePath, dryRun);
 }
 
-main();
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});

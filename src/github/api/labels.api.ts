@@ -7,38 +7,43 @@ export type GitHubLabel = {
   description: string | null;
 };
 
-export async function fetchLabels(owner: string, repo: string): Promise<GitHubLabel[]> {
+async function safeCall<T>(fn: () => Promise<T>, context: string): Promise<T> {
   try {
-    return await githubRequest.fetchLabels(owner, repo);
+    return await fn();
   } catch (error) {
-    handleGitHubError(error, "fetchLabels");
+    handleGitHubError(error, context);
     throw error;
   }
 }
 
-export async function createLabel(owner: string, repo: string, payload: any) {
-  try {
-    return await githubRequest.createLabel(owner, repo, payload);
-  } catch (error) {
-    handleGitHubError(error, "createLabel");
-    throw error;
-  }
+export async function fetchLabels(owner: string, repo: string) {
+  return safeCall(
+    async () => {
+      const labels = await githubRequest.fetchLabels(owner, repo);
+
+      return labels.map((l) => ({
+        ...l,
+        description: l.description ?? "",
+      }));
+    },
+    "fetchLabels"
+  );
 }
 
-export async function updateLabel(owner: string, repo: string, currentName: string, payload: any) {
-  try {
-    return await githubRequest.updateLabel(owner, repo, currentName, payload);
-  } catch (error) {
-    handleGitHubError(error, "updateLabel");
-    throw error;
-  }
+export async function createLabel(
+  owner: string,
+  repo: string,
+  payload: GitHubLabel
+) {
+  return safeCall(
+    () => githubRequest.createLabel(owner, repo, payload),
+    "createLabel"
+  );
 }
 
 export async function deleteLabel(owner: string, repo: string, name: string) {
-  try {
-    return await githubRequest.deleteLabel(owner, repo, name);
-  } catch (error) {
-    handleGitHubError(error, "deleteLabel");
-    throw error;
-  }
+  return safeCall(
+    () => githubRequest.deleteLabel(owner, repo, name),
+    "deleteLabel"
+  );
 }

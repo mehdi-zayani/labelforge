@@ -1,24 +1,20 @@
 import { loadLabelConfig } from "../infrastructure/config/load-label-config.js";
 import { fetchLabels } from "../github/api/labels.api.js";
-import { compareLabels } from "./label-compare.usecase.js";
 import { syncLabels } from "./sync.usecase.js";
 
 export async function runSyncPipeline(
   owner: string,
   repo: string,
+  templatePath: string,
   dryRun: boolean
 ) {
-  const localLabels = loadLabelConfig();
+  const templateLabels = loadLabelConfig(templatePath);
   const remoteLabels = await fetchLabels(owner, repo);
 
-    const normalizedLocalLabels = localLabels.map((l) => ({
-      ...l,
-      description: l.description ?? ""
-    }));
+  await syncLabels(owner, repo, remoteLabels, templateLabels, dryRun);
 
-const diff = compareLabels(normalizedLocalLabels, remoteLabels);
-
-  
-  await syncLabels(owner, repo, diff, dryRun);
-  return diff;
+  return {
+    remoteCount: remoteLabels.length,
+    templateCount: templateLabels.length,
+  };
 }

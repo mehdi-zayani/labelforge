@@ -1,0 +1,8 @@
+version: "1.0"
+
+templates:
+  - group: devops
+    labels:
+      - name: docker
+        color: "1D76DB"
+        description: "containerization platform"

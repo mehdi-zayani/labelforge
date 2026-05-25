@@ -1,10 +1,9 @@
 import type { Label } from "./label.js";
+import type { GitHubLabel } from "../github/api/labels.api.js";
 
-export interface LabelComparison {
+export type LabelComparison = {
   toCreate: Label[];
-  toUpdate: {
-    current: Label;
-    next: Label;
-  }[];
-  toDelete: Label[];
-}
+  toUpdate: { current: GitHubLabel; next: Label }[];
+  toDelete: GitHubLabel[];
+  toIgnore: Label[];
+};
