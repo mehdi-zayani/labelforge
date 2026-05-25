@@ -1,32 +1,52 @@
 import { octokit } from "../client/github.client.js";
 import { handleGitHubError } from "../handlers/github-error.handler.js";
-
 import { logger } from "../../utils/logger.js";
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 export async function validateRepositoryAccess(
   owner: string,
   repo: string
 ): Promise<boolean> {
-  try {
-    await octokit.repos.get({
-      owner,
-      repo,
-    });
+  let attempts = 0;
+  const maxAttempts = 3;
 
-    logger.success(`Repository validated: ${owner}/${repo}`);
+  while (attempts < maxAttempts) {
+    try {
+      await octokit.repos.get({
+        owner,
+        repo,
+      });
 
-    return true;
-  } catch (error: any) {
-    handleGitHubError(error, "validateRepositoryAccess");
+      logger.success(`Repository validated: ${owner}/${repo}`);
+      return true;
+    } catch (error: any) {
+      const status = error?.status;
+      attempts++;
 
-    if (error?.status === 404) {
-      logger.error("Repository not found or not accessible");
-    } else if (error?.status === 401) {
-      logger.error("Unauthorized access - invalid GitHub token");
-    } else {
-      logger.error("Repository validation failed");
+     
+      if (status >= 500 && attempts < maxAttempts) {
+        logger.warn(
+          `[GitHub] 5xx error on repo validation - retry ${attempts}/${maxAttempts}`
+        );
+        await sleep(800 * attempts);
+        continue;
+      }
+
+      handleGitHubError(error, "validateRepositoryAccess");
+
+      if (status === 404) {
+        logger.error("Repository not found or not accessible");
+      } else if (status === 401) {
+        logger.error("Unauthorized access - invalid GitHub token");
+      } else {
+        logger.error("Repository validation failed");
+      }
+
+      return false;
     }
-
-    return false;
   }
+
+  logger.error("Repository validation failed after retries");
+  return false;
 }

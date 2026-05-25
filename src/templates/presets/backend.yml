@@ -5,11 +5,32 @@ templates:
     labels:
       - name: api
         color: "1D76DB"
-        description: REST API
+        description: "REST API endpoints"
 
       - name: service
         color: "2EA44F"
+        description: "Business service layer"
 
-      - name: bug
+      - name: bug-pro
         color: "D73A4A"
-   
+        description: "Bug or defect"
+
+      - name: feature
+        color: "0E8A16"
+        description: "New feature implementation"
+
+      - name: enhancement
+        color: "5319E7"
+        description: "Improvement or enhancement"
+
+      - name: test
+        color: "B60205"
+        description: "Unit and integration tests"
+
+      - name: docs
+        color: "0E8A16"
+        description: "Documentation updates"
+
+      - name: infra
+        color: "6F42C1"
+        description: "Infrastructure / DevOps"

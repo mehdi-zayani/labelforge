@@ -1,76 +1,53 @@
-import type { LabelComparison } from "../domain/label-compare.js";
+import type { GitHubLabel } from "../github/api/labels.api.js";
 
 import {
   createLabel,
   deleteLabel,
-  updateLabel
 } from "../github/api/labels.api.js";
 
 import { logger } from "../utils/logger.js";
 
 export async function syncLabels(
-  
   owner: string,
   repo: string,
-  diff: LabelComparison,
+  remoteLabels: GitHubLabel[],
+  templateLabels: GitHubLabel[],
   dryRun: boolean = true
-) {
-   if (dryRun) return;
-  // CREATE
-for (const label of diff.toCreate) {
-  if (dryRun) {
-    logger.debug(`[DRY-RUN][CREATE] ${label.name}`);
-    continue;
-  }
+){
+  logger.info("Cleaning existing labels...");
 
-  const payload: any = {
-    name: label.name,
-    color: label.color,
-  };
+  for (const label of remoteLabels) {
+    if (dryRun) {
+      logger.debug(`[DRY-RUN][DELETE] ${label.name}`);
+      continue;
+    }
 
-  if (label.description) {
-    payload.description = label.description;
-  }
-
-  await createLabel(owner, repo, payload);
-
-  logger.success(`CREATE ${label.name}`);
-}
-  // UPDATE
- for (const item of diff.toUpdate) {
-  if (dryRun) {
-    logger.debug(`[DRY-RUN][UPDATE] ${item.next.name}`);
-    continue;
-  }
-
-  const payload: any = {
-    name: item.next.name,
-    color: item.next.color,
-  };
-
-  if (item.next.description) {
-    payload.description = item.next.description;
-  }
-
-  await updateLabel(owner, repo, item.current.name, payload);
-
-  logger.success(`UPDATE ${item.next.name}`);
-}
-
-  // DELETE
-  for (const label of diff.toDelete) {
     try {
-      if (dryRun) {
-        logger.debug(`[DRY-RUN][DELETE] ${label.name}`);
-        continue;
-      }
-
       await deleteLabel(owner, repo, label.name);
-
       logger.success(`DELETE ${label.name}`);
-    } catch (error) {
+    } catch {
       logger.error(`DELETE FAILED ${label.name}`);
-      logger.debug(String(error));
+    }
+  }
+
+  logger.info("Creating template labels...");
+
+  for (const label of templateLabels) {
+    if (dryRun) {
+      logger.debug(`[DRY-RUN][CREATE] ${label.name}`);
+      continue;
+    }
+
+    try {
+      await createLabel(owner, repo, {
+        name: label.name,
+        color: label.color,
+        description: label.description ?? "",
+      });
+
+      logger.success(`CREATE ${label.name}`);
+    } catch {
+      logger.error(`CREATE FAILED ${label.name}`);
     }
   }
 }
