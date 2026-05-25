@@ -1,4 +1,5 @@
 import { syncCommand } from "./cli/commands/sync.command.js";
+import { resolveTemplate } from "./cli/utils/template-resolver.js";
 
 async function main() {
   const args = process.argv.slice(2);
@@ -12,10 +13,7 @@ async function main() {
     throw new Error("Usage: sync owner repo template [dryRun]");
   }
 
-  const templatePath =
-    templateInput.endsWith(".yml") || templateInput.endsWith(".yaml")
-      ? templateInput
-      : `src/templates/presets/${templateInput}.yml`;
+  const templatePath = resolveTemplate(templateInput);
 
   await syncCommand(owner, repo, templatePath, dryRun);
 }
