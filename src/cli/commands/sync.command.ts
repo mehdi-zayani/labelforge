@@ -1,6 +1,5 @@
 import chalk from "chalk";
 import figlet from "figlet";
-import prompts from "prompts";
 
 import { validateRepositoryAccess } from "../../github/validation/repo.validator.js";
 import { logger } from "../../utils/logger.js";
@@ -41,23 +40,6 @@ export async function syncCommand(
   logger.warn("Summary");
   logger.info(`Remote: ${result.remoteCount}`);
   logger.info(`Template: ${result.templateCount}`);
-
-  if (dryRun) {
-    logger.warn("Dry-run mode");
-    return;
-  }
-
-  const response = await prompts({
-    type: "confirm",
-    name: "confirm",
-    message: "Apply changes?",
-    initial: false,
-  });
-
-  if (!response.confirm) {
-    logger.warn("Cancelled");
-    return;
-  }
 
   logger.success("Done");
 }

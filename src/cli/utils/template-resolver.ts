@@ -1,21 +1,44 @@
 import path from "path";
 import fs from "fs";
 
-export function resolveTemplate(input: string): string {
-  const isFile = input.endsWith(".yml") || input.endsWith(".yaml");
+import { readConfig } from "../config/config.store.js";
 
-  if (isFile) {
-    const absolute = path.isAbsolute(input)
+const PRESET_DIR = "src/templates/presets";
+
+export function resolveTemplate(input?: string): string {
+  const config = readConfig();
+
+  // 1. fallback config
+  if (!input && config.defaultTemplate) {
+    input = config.defaultTemplate;
+  }
+
+  if (!input) {
+    throw new Error("No template provided");
+  }
+
+  // 2. direct file path
+  if (input.endsWith(".yml") || input.endsWith(".yaml")) {
+    const abs = path.isAbsolute(input)
       ? input
       : path.resolve(process.cwd(), input);
 
-    if (!fs.existsSync(absolute)) {
-      throw new Error(`Template file not found: ${absolute}`);
+    if (!fs.existsSync(abs)) {
+      throw new Error(`Template file not found: ${abs}`);
     }
 
-    return absolute;
+    return abs;
   }
 
-  // preset mode
-  return path.resolve(process.cwd(), "src/templates/presets", `${input}.yml`);
+  // 3. preset name
+  const presetPath = path.resolve(
+    process.cwd(),
+    `${PRESET_DIR}/${input}.yml`
+  );
+
+  if (!fs.existsSync(presetPath)) {
+    throw new Error(`Preset not found: ${input}`);
+  }
+
+  return presetPath;
 }

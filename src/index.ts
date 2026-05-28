@@ -1,37 +1,33 @@
 import { syncCommand } from "./cli/commands/sync.command.js";
-import { loginCommand } from "./cli/commands/login.command.js";
+import { resolveTemplate } from "./cli/utils/template-resolver.js";
 
 async function main() {
   const args = process.argv.slice(2);
 
   const command = args[0];
 
-  switch (command) {
-    case "sync": {
-      const owner = args[1];
-      const repo = args[2];
-      const templateInput = args[3];
-      const dryRun = args[4] === "true";
-
-      if (!owner || !repo || !templateInput) {
-        throw new Error("Usage: sync owner repo template [dryRun]");
-      }
-
-      const templatePath =
-        templateInput.endsWith(".yml") || templateInput.endsWith(".yaml")
-          ? templateInput
-          : `src/templates/presets/${templateInput}.yml`;
-
-      return syncCommand(owner, repo, templatePath, dryRun);
-    }
-
-    case "login": {
-      return loginCommand();
-    }
-
-    default:
-      throw new Error("Usage: sync|login ...");
+  if (command === "login") {
+    const { loginCommand } = await import("./cli/commands/login.command.js");
+    await loginCommand();
+    return;
   }
+
+  if (command !== "sync") {
+    throw new Error("Unknown command");
+  }
+
+  const owner = args[1];
+  const repo = args[2];
+  const templateInput = args[3];
+  const dryRun = args.includes("--dry-run");
+
+  if (!owner || !repo) {
+    throw new Error("Usage: sync owner repo [template] [--dry-run]");
+  }
+
+  const templatePath = resolveTemplate(templateInput);
+
+  await syncCommand(owner, repo, templatePath, dryRun);
 }
 
 main().catch((err) => {
