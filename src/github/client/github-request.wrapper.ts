@@ -13,7 +13,11 @@ export const githubRequest = {
       repo,
     });
 
-    return res.data;
+    return res.data.map((l) => ({
+      name: l.name,
+      color: l.color,
+      description: l.description ?? null,
+    }));
   },
 
   async createLabel(owner: string, repo: string, payload: GitHubLabel) {

@@ -12,22 +12,23 @@ async function main() {
     return;
   }
 
-  if (command !== "sync") {
-    throw new Error("Unknown command");
+  if (command === "sync") {
+    const owner = args[1];
+    const repo = args[2];
+    const templateInput = args[3];
+    const dryRun = args.includes("--dry-run");
+
+    if (!owner || !repo) {
+      throw new Error("Usage: sync owner repo [template] [--dry-run]");
+    }
+
+    const templatePath = resolveTemplate(templateInput);
+
+    await syncCommand(owner, repo, templatePath, dryRun);
+    return;
   }
 
-  const owner = args[1];
-  const repo = args[2];
-  const templateInput = args[3];
-  const dryRun = args.includes("--dry-run");
-
-  if (!owner || !repo) {
-    throw new Error("Usage: sync owner repo [template] [--dry-run]");
-  }
-
-  const templatePath = resolveTemplate(templateInput);
-
-  await syncCommand(owner, repo, templatePath, dryRun);
+  throw new Error("Usage: login | sync owner repo [template] [--dry-run]");
 }
 
 main().catch((err) => {
