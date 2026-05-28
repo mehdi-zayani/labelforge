@@ -18,7 +18,7 @@ export async function loginCommand() {
 
   saveConfig({
     ...existing,
-    githubToken: response.token,
+    token: response.token,
   });
 
   logger.success("Token saved to ~/.labelforge/config.json");
