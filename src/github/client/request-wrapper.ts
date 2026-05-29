@@ -1,16 +1,20 @@
 import { retry } from "../resilience/retry.js";
-import { octokit } from "./github.client.js";
+import { getOctokit } from "./github.client.js";
 
 export const githubRequest = {
   async fetchLabels(owner: string, repo: string) {
     return retry(() =>
-      octokit.issues.listLabelsForRepo({ owner, repo })
+      getOctokit().rest.issues.listLabelsForRepo({ owner, repo })
     );
   },
 
   async createLabel(owner: string, repo: string, payload: any) {
     return retry(() =>
-      octokit.issues.createLabel({ owner, repo, ...payload })
+      getOctokit().rest.issues.createLabel({
+        owner,
+        repo,
+        ...payload,
+      })
     );
   },
 
@@ -21,7 +25,7 @@ export const githubRequest = {
     payload: any
   ) {
     return retry(() =>
-      octokit.issues.updateLabel({
+      getOctokit().rest.issues.updateLabel({
         owner,
         repo,
         name: currentName,
@@ -32,7 +36,11 @@ export const githubRequest = {
 
   async deleteLabel(owner: string, repo: string, name: string) {
     return retry(() =>
-      octokit.issues.deleteLabel({ owner, repo, name })
+      getOctokit().rest.issues.deleteLabel({
+        owner,
+        repo,
+        name,
+      })
     );
   },
 };

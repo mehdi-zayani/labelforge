@@ -1,4 +1,4 @@
-import { githubRequest } from "../client/github-request.wrapper.js";
+import { githubRequest } from "../request/github-request.wrapper.js";
 import { handleGitHubError } from "../handlers/github-error.handler.js";
 
 export type GitHubLabel = {

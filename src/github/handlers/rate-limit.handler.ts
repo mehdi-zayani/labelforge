@@ -1,7 +1,9 @@
 import { logger } from "../../utils/logger.js";
+import { isDebug } from "../../utils/debug.js";
 
 const WARN_THRESHOLD = 200;
 const CRITICAL_THRESHOLD = 50;
+
 
 export function handleRateLimit(headers: Record<string, any>) {
   const limit = Number(headers["x-ratelimit-limit"]);
@@ -12,28 +14,26 @@ export function handleRateLimit(headers: Record<string, any>) {
 
   const ratio = `${remaining}/${limit}`;
 
-  // INFO 
-  logger.info(`GitHub rate limit: ${ratio} remaining`);
-
-  // WARN LEVEL
-  if (remaining <= WARN_THRESHOLD && remaining > CRITICAL_THRESHOLD) {
-    logger.warn(
-      `GitHub rate limit is getting low: ${ratio} remaining`
-    );
+  // DEBUG ONLY (NO UX POLLUTION)
+  if (isDebug()) {
+    logger.debug(`[GitHub] rate limit ${ratio}`);
   }
 
-  // CRITICAL LEVEL
+  // WARN LEVEL (DEBUG ONLY)
+  if (isDebug() && remaining <= WARN_THRESHOLD && remaining > CRITICAL_THRESHOLD) {
+    logger.warn(`[GitHub] rate limit low ${ratio}`);
+  }
+
+  // CRITICAL LEVEL (ALWAYS KEEP, IMPORTANT)
   if (remaining <= CRITICAL_THRESHOLD && remaining > 0) {
-    logger.warn(
-      `GitHub rate limit is critical: ${ratio} remaining`
-    );
+    logger.warn(`[GitHub] rate limit critical ${ratio}`);
   }
 
-  // EXHAUSTED
+  // EXHAUSTED (ALWAYS KEEP)
   if (remaining === 0) {
     const resetDate = new Date(reset * 1000);
 
     logger.error("GitHub API rate limit exceeded");
-    logger.warn(`Rate limit resets at: ${resetDate.toLocaleTimeString()}`);
+    logger.warn(`Resets at ${resetDate.toLocaleTimeString()}`);
   }
 }

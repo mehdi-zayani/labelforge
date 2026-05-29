@@ -1,8 +1,9 @@
-import { octokit } from "../client/github.client.js";
+import { getOctokit } from "../client/github.client.js";
 import { logger } from "../../utils/logger.js";
 import { handleGitHubError } from "../handlers/github-error.handler.js";
 import { handleRateLimit } from "../handlers/rate-limit.handler.js";
 import { withTimeout } from "../resilience/timeout.js";
+import { isDebug } from "../../utils/debug.js";
 
 type RequestOptions = {
   timeoutMs?: number;
@@ -31,7 +32,9 @@ async function executeWithRetry<T>(
 
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
-      logger.debug(`[GitHub] ${context} attempt ${attempt + 1}`);
+      if (isDebug()) {
+        logger.debug(`[GitHub] ${context} attempt ${attempt + 1}`);
+      }
 
       const response: any = await withTimeout(fn(), timeoutMs);
 
@@ -56,9 +59,11 @@ async function executeWithRetry<T>(
 
       const delay = Math.min(1000, 500 * Math.pow(2, attempt));
 
-      logger.warn(
-        `[GitHub] retrying ${context} in ${delay}ms (attempt ${attempt + 1})`
-      );
+      if (isDebug()) {
+        logger.warn(
+          `[GitHub] retrying ${context} in ${delay}ms (attempt ${attempt + 1})`
+        );
+      }
 
       await sleep(delay);
     }
@@ -69,8 +74,10 @@ async function executeWithRetry<T>(
 
 export const githubRequest = {
   async fetchLabels(owner: string, repo: string): Promise<GitHubLabel[]> {
+    const octokit = getOctokit();
+
     const res = await executeWithRetry<any>(
-      () => octokit.issues.listLabelsForRepo({ owner, repo }),
+      () => octokit.rest.issues.listLabelsForRepo({ owner, repo }),
       "fetchLabels"
     );
 
@@ -82,9 +89,11 @@ export const githubRequest = {
   },
 
   async createLabel(owner: string, repo: string, payload: GitHubLabel) {
+    const octokit = getOctokit();
+
     return executeWithRetry(
       () =>
-        octokit.issues.createLabel({
+        octokit.rest.issues.createLabel({
           owner,
           repo,
           name: payload.name,
@@ -101,9 +110,11 @@ export const githubRequest = {
     currentName: string,
     payload: GitHubLabel
   ) {
+    const octokit = getOctokit();
+
     return executeWithRetry(
       () =>
-        octokit.issues.updateLabel({
+        octokit.rest.issues.updateLabel({
           owner,
           repo,
           name: currentName,
@@ -116,8 +127,10 @@ export const githubRequest = {
   },
 
   async deleteLabel(owner: string, repo: string, name: string) {
+    const octokit = getOctokit();
+
     return executeWithRetry(
-      () => octokit.issues.deleteLabel({ owner, repo, name }),
+      () => octokit.rest.issues.deleteLabel({ owner, repo, name }),
       "deleteLabel"
     );
   },
