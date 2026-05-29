@@ -1,5 +1,6 @@
 import prompts from "prompts";
 import { readConfig } from "../config/config.store.js";
+import { logger } from "../../utils/logger.js";
 
 const TEMPLATES = [
   { title: "Backend", value: "backend" },
@@ -25,7 +26,7 @@ export async function selectTemplate(): Promise<string | undefined> {
     },
     {
       onCancel: () => {
-        console.log("[INFO] Template selection cancelled");
+        logger.info("Template selection cancelled");
         return true;
       },
     }

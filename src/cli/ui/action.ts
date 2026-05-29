@@ -12,6 +12,9 @@ export async function runAction<T>(
   try {
     const result = await fn();
     spinner.succeed(chalk.green(label));
+    if (process.env.DRY_RUN === "1") {
+  console.log(chalk.magenta(`[DRY-RUN] ${label}`));
+}
     return result;
   } catch (err) {
     spinner.fail(chalk.red(label));
@@ -23,4 +26,8 @@ export function debugLog(...args: any[]) {
   if (isDebug) {
     console.log("[DEBUG]", ...args);
   }
+  
+}
+export function dryRunLog(msg: string) {
+  console.log(chalk.magenta(`[DRY-RUN] ${msg}`));
 }

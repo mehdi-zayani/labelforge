@@ -16,7 +16,7 @@ export function printSplash() {
   );
 
   console.log(
-    chalk.white("author  : ") + chalk.yellow("Mehdi Zayani")
+    chalk.white("author  : ") + chalk.blue("Mehdi Zayani")
   );
 
   console.log(chalk.gray("────────────────────────────\n"));

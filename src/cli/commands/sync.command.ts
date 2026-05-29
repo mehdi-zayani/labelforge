@@ -5,13 +5,16 @@ import { printSplash } from "../ui/splash.js";
 import { step } from "../ui/steps.js";
 import { runAction } from "../ui/action.js";
 
+import { resolveTemplate } from "../utils/template-resolver.js";
+import { logger } from "../../utils/logger.js";
+
 export async function syncCommand(
   owner: string,
   repo: string,
-  templatePath: string,
+  templateInput: string | undefined,
   dryRun: boolean
 ) {
-  printSplash();
+
 
   try {
     // STEP 1 — validate repo
@@ -43,44 +46,17 @@ export async function syncCommand(
 
     const result = await runAction(
       "syncing labels",
-      () =>
-        runSyncPipeline(
-          owner,
-          repo,
-          templatePath,
-          dryRun
-        )
+      () => runSyncPipeline(owner, repo, templatePath, dryRun)
     );
 
-    // SUMMARY (clean UX)
+    // SUMMARY
     console.log("\n");
-
     console.log("Summary");
     console.log(`Remote   : ${result.remoteCount}`);
     console.log(`Template : ${result.templateCount}`);
-
     console.log("\nDone");
   } catch (err: any) {
-    console.error("\n");
-    console.error("Error:", err.message ?? err);
+    logger.error(err?.message ?? String(err));
     process.exit(1);
   }
-<<<<<<< Updated upstream
-
-  logger.info("STEP 1 - Run sync pipeline");
-
-  const result = await runSyncPipeline(
-    owner,
-    repo,
-    templatePath,
-    dryRun
-  );
-
-  logger.warn("Summary");
-  logger.info(`Remote: ${result.remoteCount}`);
-  logger.info(`Template: ${result.templateCount}`);
-
-  logger.success("Done");
-=======
->>>>>>> Stashed changes
 }
