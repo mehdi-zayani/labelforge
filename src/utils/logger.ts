@@ -1,5 +1,6 @@
 import chalk from "chalk";
 import { getCliContext } from "../cli/context/cli.context.js";
+import { isDebug } from "./debug.js";
 
 function isVerbose() {
   return getCliContext().verbose;
@@ -23,7 +24,7 @@ export const logger = {
   },
 
   debug: (msg: string) => {
-    if (isVerbose()) {
+    if (isVerbose() || isDebug()) {
       console.log(chalk.gray(`[DEBUG] ${msg}`));
     }
   },
