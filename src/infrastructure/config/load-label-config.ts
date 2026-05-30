@@ -1,8 +1,18 @@
-import fs from "fs";
-import path from "path";
-import yaml from "js-yaml";
-import type { GitHubLabel } from "../../github/api/labels.api.js";
+import fs from 'fs';
+import path from 'path';
+import yaml from 'js-yaml';
 
+type GitHubLabel = {
+  name: string;
+  color: string;
+  description: string | null;
+};
+
+/**
+ * -------------------------
+ * TEMPLATE FILE STRUCTURE
+ * -------------------------
+ */
 type TemplateFile = {
   version: string;
   templates: {
@@ -11,6 +21,11 @@ type TemplateFile = {
   }[];
 };
 
+/**
+ * -------------------------
+ * LOAD LABEL CONFIG
+ * -------------------------
+ */
 export function loadLabelConfig(templatePath: string): GitHubLabel[] {
   const absolutePath = path.isAbsolute(templatePath)
     ? templatePath
@@ -20,11 +35,11 @@ export function loadLabelConfig(templatePath: string): GitHubLabel[] {
     throw new Error(`Template not found: ${absolutePath}`);
   }
 
-  const raw = fs.readFileSync(absolutePath, "utf-8");
+  const raw = fs.readFileSync(absolutePath, 'utf-8');
   const parsed = yaml.load(raw) as TemplateFile;
 
   if (!parsed?.templates) {
-    throw new Error("Invalid template structure");
+    throw new Error('Invalid template structure');
   }
 
   return parsed.templates.flatMap((group) => group.labels);

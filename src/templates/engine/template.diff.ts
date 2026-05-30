@@ -1,18 +1,56 @@
-import type { Label } from "../../domain/label.js";
-import type { GitHubLabel } from "../../github/api/labels.api.js";
-import type { LabelComparison } from "../../domain/label-compare.js";
+/**
+ * -------------------------
+ * TEMPLATE DIFF ENGINE
+ * -------------------------
+ */
 
+import type { Label } from '../../domain/label.js';
+import type { GitHubLabel } from '../../github/request/github-request.wrapper.js';
+
+/**
+ * -------------------------
+ * LABEL COMPARISON MODEL
+ * -------------------------
+ */
+export type LabelComparison = {
+  toCreate: Label[];
+  toUpdate: { current: GitHubLabel; next: Label }[];
+  toDelete: GitHubLabel[];
+  toIgnore: Label[];
+};
+
+/**
+ * -------------------------
+ * NORMALIZATION UTILS
+ * -------------------------
+ */
 const normalizeKey = (value: string) =>
-  value.trim().toLowerCase().replace(/\s+/g, "-").replace(/\//g, "-");
+  value.trim().toLowerCase().replace(/\s+/g, '-').replace(/\//g, '-');
 
+/**
+ * -------------------------
+ * GITHUB NORMALIZATION
+ * -------------------------
+ * Converts GitHub API labels into internal normalized format.
+ */
 function normalizeGitHub(labels: GitHubLabel[]): Label[] {
   return labels.map((l) => ({
     name: normalizeKey(l.name),
     color: l.color,
-    description: l.description ?? "",
+    description: l.description ?? '',
   }));
 }
 
+/**
+ * -------------------------
+ * TEMPLATE DIFF CALCULATION
+ * -------------------------
+ * Compares template labels with GitHub labels and produces:
+ * - toCreate
+ * - toUpdate
+ * - toDelete
+ * - toIgnore
+ */
 export function diffTemplate(
   templateLabels: Label[],
   githubLabels: GitHubLabel[]
@@ -26,16 +64,19 @@ export function diffTemplate(
   );
 
   const toCreate: Label[] = [];
-  const toUpdate: { current: Label; next: Label }[] = [];
+  const toUpdate: { current: GitHubLabel; next: Label }[] = [];
   const toIgnore: Label[] = [];
-  const toDelete: Label[] = [];
+  const toDelete: GitHubLabel[] = [];
 
   /**
-   * GLOBAL GUARD (IMPORTANT FIX)
-   * → évite les CREATE déjà existants même si diff bug
+   * GLOBAL GUARD
+   * → prevents duplicate creation when diff state is inconsistent
    */
   const used = new Set<string>(remote.map((r) => r.name));
 
+  /**
+   * COMPARE TEMPLATE -> REMOTE
+   */
   for (const tpl of templateLabels) {
     const key = normalizeKey(tpl.name);
 
@@ -56,7 +97,7 @@ export function diffTemplate(
 
     const isDifferent =
       tpl.color !== existing.color ||
-      (tpl.description ?? "") !== (existing.description ?? "");
+      (tpl.description ?? '') !== (existing.description ?? '');
 
     if (isDifferent) {
       toUpdate.push({
@@ -71,6 +112,9 @@ export function diffTemplate(
     }
   }
 
+  /**
+   * DETECT REMOTE EXTRA LABELS
+   */
   for (const r of remote) {
     if (!templateMap.has(r.name)) {
       toDelete.push(r);

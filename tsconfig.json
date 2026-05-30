@@ -29,7 +29,7 @@
     "declarationMap": true,
 
     // =========================
-    // Type safety 
+    // Type safety
     // =========================
 
     "strict": true,
@@ -43,7 +43,6 @@
     "verbatimModuleSyntax": true,
     "isolatedModules": true,
 
-    
     "moduleDetection": "force",
     "skipLibCheck": true
   }

@@ -1,36 +1,36 @@
-version: "1.0"
+version: '1.0'
 
 templates:
   - group: backend
     labels:
       - name: api
-        color: "1D76DB"
-        description: "REST API endpoints"
+        color: '1D76DB'
+        description: 'REST API endpoints'
 
       - name: service
-        color: "2EA44F"
-        description: "Business service layer"
+        color: '2EA44F'
+        description: 'Business service layer'
 
       - name: bug-pro
-        color: "D73A4A"
-        description: "Bug or defect"
+        color: 'D73A4A'
+        description: 'Bug or defect'
 
       - name: feature
-        color: "0E8A16"
-        description: "New feature implementation"
+        color: '0E8A16'
+        description: 'New feature implementation'
 
       - name: enhancement
-        color: "5319E7"
-        description: "Improvement or enhancement"
+        color: '5319E7'
+        description: 'Improvement or enhancement'
 
       - name: test
-        color: "B60205"
-        description: "Unit and integration tests"
+        color: 'B60205'
+        description: 'Unit and integration tests'
 
       - name: docs
-        color: "0E8A16"
-        description: "Documentation updates"
+        color: '0E8A16'
+        description: 'Documentation updates'
 
       - name: infra
-        color: "6F42C1"
-        description: "Infrastructure / DevOps"
+        color: '6F42C1'
+        description: 'Infrastructure / DevOps'

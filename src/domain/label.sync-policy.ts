@@ -1,3 +1,24 @@
-export type SyncPolicy = "RESET";
+/**
+ * -------------------------
+ * SYNC POLICY MODEL
+ * -------------------------
+ */
 
-export const syncPolicy: SyncPolicy = "RESET";
+/**
+ * -------------------------
+ * SYNC STRATEGY
+ * -------------------------
+ * Defines how label synchronization behaves.
+ *
+ * RESET:
+ * - deletes all remote labels
+ * - recreates labels from template
+ */
+export type SyncPolicy = 'RESET';
+
+/**
+ * -------------------------
+ * DEFAULT POLICY
+ * -------------------------
+ */
+export const syncPolicy: SyncPolicy = 'RESET';
