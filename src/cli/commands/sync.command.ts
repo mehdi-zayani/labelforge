@@ -1,12 +1,12 @@
 import { validateRepositoryAccess } from "../../github/validation/repo.validator.js";
 import { runSyncPipeline } from "../../application/sync.pipeline.usecase.js";
 
-import { printSplash } from "../ui/splash.js";
 import { step } from "../ui/steps.js";
 import { runAction } from "../ui/action.js";
 
 import { resolveTemplate } from "../utils/template-resolver.js";
 import { logger } from "../../utils/logger.js";
+import { isJson, isVerbose } from "../ui/output-mode.js";
 
 export async function syncCommand(
   owner: string,
@@ -14,8 +14,6 @@ export async function syncCommand(
   templateInput: string | undefined,
   dryRun: boolean
 ) {
-
-
   try {
     // STEP 1 — validate repo
     step("validate repository", 1, 3);
@@ -27,6 +25,10 @@ export async function syncCommand(
 
     if (!ok) {
       throw new Error("Invalid repository or access denied");
+    }
+
+    if (isVerbose()) {
+      logger.debug("[SYNC] repository validated");
     }
 
     // STEP 2 — resolve template
@@ -41,6 +43,10 @@ export async function syncCommand(
       throw new Error("Template resolution failed");
     }
 
+    if (isVerbose()) {
+      logger.debug(`[SYNC] template resolved: ${templatePath}`);
+    }
+
     // STEP 3 — sync pipeline
     step("run sync pipeline", 3, 3);
 
@@ -50,10 +56,21 @@ export async function syncCommand(
     );
 
     // SUMMARY
-    console.log("\n");
-    console.log("Summary");
+    if (isJson()) {
+      console.log(
+        JSON.stringify({
+          remote: result.remoteCount,
+          template: result.templateCount,
+          status: "success",
+        })
+      );
+      return;
+    }
+
+    console.log("\nSummary");
     console.log(`Remote   : ${result.remoteCount}`);
     console.log(`Template : ${result.templateCount}`);
+
     console.log("\nDone");
   } catch (err: any) {
     logger.error(err?.message ?? String(err));

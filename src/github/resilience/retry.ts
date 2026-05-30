@@ -1,6 +1,6 @@
 import { getBackoffDelay } from "./backoff.js";
 import { logger } from "../../utils/logger.js";
-import { isDebug } from "../../utils/debug.js";
+import { isVerbose } from "../../cli/ui/output-mode.js";
 
 type RetryOptions = {
   retries?: number;
@@ -17,7 +17,7 @@ export async function retry<T>(
 
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
-      if (isDebug()) {
+      if (isVerbose()) {
         logger.debug(`[Retry] attempt ${attempt + 1}`);
       }
 
@@ -36,8 +36,8 @@ export async function retry<T>(
 
       const delay = getBackoffDelay(attempt, baseDelay);
 
-      if (isDebug()) {
-        logger.warn(
+      if (isVerbose()) {
+        logger.debug(
           `[Retry] retrying in ${delay}ms (status=${status ?? "unknown"})`
         );
       }

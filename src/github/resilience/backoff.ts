@@ -1,5 +1,5 @@
 import { logger } from "../../utils/logger.js";
-import { isDebug } from "../../utils/debug.js";
+import { isVerbose } from "../../cli/ui/output-mode.js";
 
 export function getBackoffDelay(
   attempt: number,
@@ -10,7 +10,7 @@ export function getBackoffDelay(
 
   const delay = Math.min(exponential, maxDelay);
 
-  if (isDebug()) {
+  if (isVerbose()) {
     logger.debug(
       `[Backoff] attempt=${attempt + 1} delay=${delay}ms`
     );

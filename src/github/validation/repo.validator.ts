@@ -1,5 +1,6 @@
 import { getOctokit } from "../client/github.client.js";
 import { logger } from "../../utils/logger.js";
+import { isVerbose } from "../../cli/ui/output-mode.js";
 
 function sleep(ms: number) {
   return new Promise((r) => setTimeout(r, ms));
@@ -15,9 +16,11 @@ async function retry<T>(
   } catch (err: any) {
     const status = err?.status;
 
-    logger.warn(
-      `[GitHub] validate repo failed (status=${status ?? "unknown"})`
-    );
+    if (isVerbose()) {
+      logger.warn(
+        `[GitHub] validate repo failed (status=${status ?? "unknown"})`
+      );
+    }
 
     if (retries <= 0) throw err;
 
@@ -31,6 +34,10 @@ export async function validateRepositoryAccess(
   repo: string
 ): Promise<boolean> {
   try {
+    if (isVerbose()) {
+      logger.debug(`[GitHub] validating repository ${owner}/${repo}`);
+    }
+
     await retry(() =>
       getOctokit().rest.repos.get({
         owner,
@@ -38,11 +45,16 @@ export async function validateRepositoryAccess(
       })
     );
 
+    if (isVerbose()) {
+      logger.debug(`[GitHub] repository valid ${owner}/${repo}`);
+    }
+
     return true;
   } catch (err: any) {
-   logger.error(
-  `[GitHub] Repository validation failed | status=${err?.status} | message=${err?.message}`
-);
+    logger.error(
+      `[GitHub] Repository validation failed | status=${err?.status} | message=${err?.message}`
+    );
+
     return false;
   }
 }
