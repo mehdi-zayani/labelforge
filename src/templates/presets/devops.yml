@@ -3,6 +3,105 @@ version: '1.0'
 templates:
   - group: devops
     labels:
-      - name: docker
+
+      # -------------------------
+      # CI/CD CORE
+      # -------------------------
+      - name: ci
+        color: '0366D6'
+        description: 'Continuous Integration pipelines'
+
+      - name: cd
+        color: '1F883D'
+        description: 'Continuous Deployment pipelines'
+
+      - name: pipeline
+        color: '5319E7'
+        description: 'CI/CD pipeline configuration'
+
+      - name: build
         color: '1D76DB'
-        description: 'containerization platform'
+        description: 'Build system changes'
+
+      # -------------------------
+      # RELEASE MANAGEMENT
+      # -------------------------
+      - name: release
+        color: '0E8A16'
+        description: 'Release process'
+
+      - name: versioning
+        color: '8A2BE2'
+        description: 'Versioning / tagging'
+
+      - name: hotfix
+        color: 'B60205'
+        description: 'Emergency production fix'
+
+      # -------------------------
+      # QUALITY GATES
+      # -------------------------
+      - name: test
+        color: 'B60205'
+        description: 'Automated tests in pipeline'
+
+      - name: e2e
+        color: 'D73A4A'
+        description: 'End-to-end tests'
+
+      - name: lint
+        color: '0E8A16'
+        description: 'Linting / formatting checks'
+
+      - name: security-scan
+        color: 'E99695'
+        description: 'Security scanning in CI'
+
+      - name: coverage
+        color: 'FBCA04'
+        description: 'Code coverage reports'
+
+      # -------------------------
+      # INFRA IN CI CONTEXT
+      # -------------------------
+      - name: docker
+        color: '0E8A16'
+        description: 'Docker builds in pipeline'
+
+      - name: registry
+        color: '5319E7'
+        description: 'Container registry'
+
+      - name: artifact
+        color: 'C2E0C6'
+        description: 'Build artifacts'
+
+      # -------------------------
+      # DEPLOYMENT
+      # -------------------------
+      - name: staging
+        color: '1D76DB'
+        description: 'Staging environment'
+
+      - name: production
+        color: 'B60205'
+        description: 'Production environment'
+
+      - name: rollback
+        color: 'FBCA04'
+        description: 'Rollback process'
+
+      # -------------------------
+      # OPS SUPPORT
+      # -------------------------
+      - name: monitoring
+        color: '0E8A16'
+        description: 'Monitoring pipelines'
+
+      - name: alerting
+        color: 'D73A4A'
+        description: 'CI/CD alerts'
+
+      - name: failure
+        color: 'B60205'
+        description: 'Pipeline failure tracking'

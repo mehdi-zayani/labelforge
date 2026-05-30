@@ -14,12 +14,29 @@
   "license": "MIT",
   "type": "module",
   "main": "dist/index.js",
+  "bin": {
+    "labelforge": "dist/index.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
-    "start": "node dist/bootstrap.js",
+    "start": "node dist/index.js",
     "dev": "tsc -w",
     "test": "echo \"no tests yet\""
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/<your-org>/labelforge.git"
+  },
+  "bugs": {
+    "url": "https://github.com/<your-org>/labelforge/issues"
+  },
+  "homepage": "https://github.com/<your-org>/labelforge#readme",
   "devDependencies": {
     "@types/node": "^25.6.2",
     "@types/prompts": "^2.4.9",
