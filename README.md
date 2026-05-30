@@ -4,10 +4,10 @@
 ![npm downloads](https://img.shields.io/npm/dm/labelforge)
 ![license](https://img.shields.io/npm/l/labelforge)
 ![node](https://img.shields.io/node/v/labelforge)
-![CI](https://github.com/OWNER/REPO/actions/workflows/ci.yml/badge.svg)
-![issues](https://img.shields.io/github/issues/OWNER/REPO)
-![pull requests](https://img.shields.io/github/issues-pr/OWNER/REPO)
-![last commit](https://img.shields.io/github/last-commit/OWNER/REPO)
+![CI](https://github.com/mehdi-zayani/labelforge/actions/workflows/ci.yml/badge.svg)
+![issues](https://img.shields.io/github/issues/mehdi-zayani/labelforge)
+![pull requests](https://img.shields.io/github/issues-pr/mehdi-zayani/labelforge)
+![last commit](https://img.shields.io/github/last-commit/mehdi-zayani/labelforge)
 
 
 Labelforge is a CLI tool that synchronizes GitHub repository labels from reusable YAML templates.
