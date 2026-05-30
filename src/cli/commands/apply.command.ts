@@ -1,4 +1,10 @@
-import { parseTemplate } from '../../templates/parser/template.parser.js';
+/**
+ * -------------------------
+ * APPLY COMMAND
+ * -------------------------
+ */
+
+import { loadTemplate } from '../../templates/loader/load-template.js';
 import { diffTemplate } from '../../templates/engine/template.diff.js';
 import { applyTemplate } from '../../templates/engine/template.apply.js';
 import { githubRequest } from '../../github/request/github-request.wrapper.js';
@@ -6,18 +12,44 @@ import { githubRequest } from '../../github/request/github-request.wrapper.js';
 import path from 'path';
 import type { GitHubLabelTemplate } from '../../templates/types/template.types.js';
 
+/**
+ * -------------------------
+ * APPLY CLI FLOW
+ * -------------------------
+ * Executes full label sync pipeline:
+ * - load template
+ * - fetch GitHub labels
+ * - compute diff
+ * - preview changes
+ * - apply changes (unless dry-run)
+ */
 export async function applyCommand(
   owner: string,
   repo: string,
   templatePath: string,
   dryRun: boolean
 ) {
-  const template = parseTemplate(
+  /**
+   * -------------------------
+   * TEMPLATE LOADING
+   * -------------------------
+   */
+  const template = loadTemplate(
     path.resolve(process.cwd(), templatePath)
   ) as GitHubLabelTemplate;
 
+  /**
+   * -------------------------
+   * FETCH GITHUB LABELS
+   * -------------------------
+   */
   const githubLabels = await githubRequest.fetchLabels(owner, repo);
 
+  /**
+   * -------------------------
+   * NORMALIZE TEMPLATE LABELS
+   * -------------------------
+   */
   const labels = template.templates.flatMap((t) =>
     (t.labels ?? []).map((l) => ({
       name: l.name,
@@ -26,8 +58,18 @@ export async function applyCommand(
     }))
   );
 
+  /**
+   * -------------------------
+   * DIFF CALCULATION
+   * -------------------------
+   */
   const diff = diffTemplate(labels, githubLabels);
 
+  /**
+   * -------------------------
+   * PREVIEW OUTPUT
+   * -------------------------
+   */
   console.log('\n--- PREVIEW ---');
   console.log(
     'To create:',
@@ -42,6 +84,11 @@ export async function applyCommand(
     diff.toIgnore.map((l) => l.name)
   );
 
+  /**
+   * -------------------------
+   * APPLY PHASE
+   * -------------------------
+   */
   if (!dryRun) {
     await applyTemplate(owner, repo, diff, false);
   }

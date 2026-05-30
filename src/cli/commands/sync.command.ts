@@ -1,3 +1,9 @@
+/**
+ * -------------------------
+ * SYNC COMMAND
+ * -------------------------
+ */
+
 import { validateRepositoryAccess } from '../../github/validation/repo.validator.js';
 import { runSyncPipeline } from '../../application/sync.pipeline.usecase.js';
 
@@ -8,6 +14,20 @@ import { resolveTemplate } from '../utils/template-resolver.js';
 import { logger } from '../../utils/logger.js';
 import { isJson, isVerbose } from '../ui/output-mode.js';
 
+/**
+ * -------------------------
+ * SYNC EXECUTION FLOW
+ * -------------------------
+ * Orchestrates full label synchronization pipeline:
+ * - repository validation
+ * - template resolution
+ * - sync execution
+ *
+ * Supports:
+ * - JSON output mode
+ * - verbose debug mode
+ * - dry-run execution
+ */
 export async function syncCommand(
   owner: string,
   repo: string,
@@ -15,7 +35,11 @@ export async function syncCommand(
   dryRun: boolean
 ) {
   try {
-    // STEP 1 — validate repo
+    /**
+     * -------------------------
+     * STEP 1 - VALIDATE REPOSITORY
+     * -------------------------
+     */
     step('validate repository', 1, 3);
 
     const ok = await runAction('validating repository', () =>
@@ -30,7 +54,11 @@ export async function syncCommand(
       logger.debug('[SYNC] repository validated');
     }
 
-    // STEP 2 — resolve template
+    /**
+     * -------------------------
+     * STEP 2 - RESOLVE TEMPLATE
+     * -------------------------
+     */
     step('resolve template', 2, 3);
 
     const templatePath = await runAction('resolving template', () =>
@@ -45,14 +73,22 @@ export async function syncCommand(
       logger.debug(`[SYNC] template resolved: ${templatePath}`);
     }
 
-    // STEP 3 — sync pipeline
+    /**
+     * -------------------------
+     * STEP 3 - RUN SYNC PIPELINE
+     * -------------------------
+     */
     step('run sync pipeline', 3, 3);
 
     const result = await runAction('syncing labels', () =>
       runSyncPipeline(owner, repo, templatePath, dryRun)
     );
 
-    // SUMMARY
+    /**
+     * -------------------------
+     * SUMMARY OUTPUT
+     * -------------------------
+     */
     if (isJson()) {
       console.log(
         JSON.stringify({

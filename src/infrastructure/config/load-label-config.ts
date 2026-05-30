@@ -1,8 +1,18 @@
 import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
-import type { GitHubLabel } from '../../github/api/labels.api.js';
 
+type GitHubLabel = {
+  name: string;
+  color: string;
+  description: string | null;
+};
+
+/**
+ * -------------------------
+ * TEMPLATE FILE STRUCTURE
+ * -------------------------
+ */
 type TemplateFile = {
   version: string;
   templates: {
@@ -11,6 +21,11 @@ type TemplateFile = {
   }[];
 };
 
+/**
+ * -------------------------
+ * LOAD LABEL CONFIG
+ * -------------------------
+ */
 export function loadLabelConfig(templatePath: string): GitHubLabel[] {
   const absolutePath = path.isAbsolute(templatePath)
     ? templatePath

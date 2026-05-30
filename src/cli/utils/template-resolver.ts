@@ -1,3 +1,9 @@
+/**
+ * -------------------------
+ * TEMPLATE RESOLVER
+ * -------------------------
+ */
+
 import path from 'path';
 import fs from 'fs';
 
@@ -8,6 +14,19 @@ import { isVerbose } from '../ui/output-mode.js';
 
 const PRESET_DIR = 'src/templates/presets';
 
+/**
+ * -------------------------
+ * TEMPLATE RESOLUTION FLOW
+ * -------------------------
+ * Resolves template input into an absolute YAML template path.
+ *
+ * Resolution order:
+ * 1. CLI input
+ * 2. Config default template
+ * 3. Interactive selector
+ * 4. Direct file path (.yml/.yaml)
+ * 5. Preset name lookup
+ */
 export async function resolveTemplate(
   input?: string
 ): Promise<string | undefined> {
@@ -15,7 +34,11 @@ export async function resolveTemplate(
 
   let template = input;
 
-  // 1. fallback config
+  /**
+   * -------------------------
+   * FALLBACK CONFIG
+   * -------------------------
+   */
   if (!template && config.defaultTemplate) {
     template = config.defaultTemplate;
 
@@ -24,7 +47,11 @@ export async function resolveTemplate(
     }
   }
 
-  // 2. interactive selector
+  /**
+   * -------------------------
+   * INTERACTIVE SELECTION
+   * -------------------------
+   */
   if (!template) {
     logger.warn('No template provided, opening selector...');
 
@@ -40,7 +67,11 @@ export async function resolveTemplate(
     }
   }
 
-  // 3. direct file path (.yml / .yaml)
+  /**
+   * -------------------------
+   * DIRECT FILE PATH
+   * -------------------------
+   */
   if (template.endsWith('.yml') || template.endsWith('.yaml')) {
     const abs = path.isAbsolute(template)
       ? template
@@ -57,7 +88,11 @@ export async function resolveTemplate(
     return abs;
   }
 
-  // 4. preset name
+  /**
+   * -------------------------
+   * PRESET NAME RESOLUTION
+   * -------------------------
+   */
   const presetPath = path.resolve(
     process.cwd(),
     `${PRESET_DIR}/${template}.yml`
