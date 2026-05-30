@@ -1,15 +1,15 @@
-import type { Label } from "../../domain/label.js";
-import type { GitHubLabel } from "../../github/api/labels.api.js";
-import type { LabelComparison } from "../../domain/label-compare.js";
+import type { Label } from '../../domain/label.js';
+import type { GitHubLabel } from '../../github/api/labels.api.js';
+import type { LabelComparison } from '../../domain/label-compare.js';
 
 const normalizeKey = (value: string) =>
-  value.trim().toLowerCase().replace(/\s+/g, "-").replace(/\//g, "-");
+  value.trim().toLowerCase().replace(/\s+/g, '-').replace(/\//g, '-');
 
 function normalizeGitHub(labels: GitHubLabel[]): Label[] {
   return labels.map((l) => ({
     name: normalizeKey(l.name),
     color: l.color,
-    description: l.description ?? "",
+    description: l.description ?? '',
   }));
 }
 
@@ -56,7 +56,7 @@ export function diffTemplate(
 
     const isDifferent =
       tpl.color !== existing.color ||
-      (tpl.description ?? "") !== (existing.description ?? "");
+      (tpl.description ?? '') !== (existing.description ?? '');
 
     if (isDifferent) {
       toUpdate.push({

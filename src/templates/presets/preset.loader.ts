@@ -1,12 +1,12 @@
-import fs from "fs";
-import path from "path";
-import yaml from "js-yaml";
-import type { GitHubLabelTemplate } from "../types/template.types.js";
+import fs from 'fs';
+import path from 'path';
+import yaml from 'js-yaml';
+import type { GitHubLabelTemplate } from '../types/template.types.js';
 
 export function loadPreset(name: string): GitHubLabelTemplate {
   const filePath = path.resolve(
     process.cwd(),
-    "src/templates/presets",
+    'src/templates/presets',
     `${name}.yml`
   );
 
@@ -14,6 +14,6 @@ export function loadPreset(name: string): GitHubLabelTemplate {
     throw new Error(`Preset not found: ${name}`);
   }
 
-  const file = fs.readFileSync(filePath, "utf-8");
+  const file = fs.readFileSync(filePath, 'utf-8');
   return yaml.load(file) as GitHubLabelTemplate;
 }

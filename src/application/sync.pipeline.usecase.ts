@@ -1,6 +1,6 @@
-import { loadLabelConfig } from "../infrastructure/config/load-label-config.js";
-import { fetchLabels } from "../github/api/labels.api.js";
-import { syncLabels } from "./sync.usecase.js";
+import { loadLabelConfig } from '../infrastructure/config/load-label-config.js';
+import { fetchLabels } from '../github/api/labels.api.js';
+import { syncLabels } from './sync.usecase.js';
 
 export async function runSyncPipeline(
   owner: string,

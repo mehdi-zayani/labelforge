@@ -1,11 +1,11 @@
-import fs from "fs";
-import os from "os";
-import path from "path";
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
 
-import type { LabelforgeConfig } from "./config.types.js";
+import type { LabelforgeConfig } from './config.types.js';
 
-const CONFIG_DIR = path.join(os.homedir(), ".labelforge");
-const CONFIG_FILE = path.join(CONFIG_DIR, "config.json");
+const CONFIG_DIR = path.join(os.homedir(), '.labelforge');
+const CONFIG_FILE = path.join(CONFIG_DIR, 'config.json');
 
 const DEFAULT_CONFIG: LabelforgeConfig = {
   token: null,
@@ -29,7 +29,7 @@ export function readConfig(): LabelforgeConfig {
   }
 
   try {
-    const raw = fs.readFileSync(CONFIG_FILE, "utf-8");
+    const raw = fs.readFileSync(CONFIG_FILE, 'utf-8');
 
     return {
       ...DEFAULT_CONFIG,
@@ -43,7 +43,7 @@ export function readConfig(): LabelforgeConfig {
 export function writeConfig(config: LabelforgeConfig) {
   ensureConfigDir();
 
-  fs.writeFileSync(CONFIG_FILE, JSON.stringify(config, null, 2), "utf-8");
+  fs.writeFileSync(CONFIG_FILE, JSON.stringify(config, null, 2), 'utf-8');
 }
 
 export function updateConfig(partial: Partial<LabelforgeConfig>) {
@@ -57,7 +57,6 @@ export function updateConfig(partial: Partial<LabelforgeConfig>) {
   writeConfig(next);
   return next;
 }
-
 
 export const loadConfig = readConfig;
 export const saveConfig = writeConfig;

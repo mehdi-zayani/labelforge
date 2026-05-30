@@ -4,18 +4,16 @@ export function parseArgs(args: string[]) {
     owner: undefined as string | undefined,
     repo: undefined as string | undefined,
     templatePath: undefined as string | undefined,
-    dryRun: args.includes("--dry-run") || args.includes("-d"),
+    dryRun: args.includes('--dry-run') || args.includes('-d'),
     verbose: false,
   };
 
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
 
-    if (arg === "sync" || arg === "apply") result.command = arg;
-
-    else if (arg === "--dry-run") result.dryRun = true;
-    else if (arg === "--verbose" || arg === "-v") result.verbose = true;
-
+    if (arg === 'sync' || arg === 'apply') result.command = arg;
+    else if (arg === '--dry-run') result.dryRun = true;
+    else if (arg === '--verbose' || arg === '-v') result.verbose = true;
     else if (!result.owner) result.owner = arg;
     else if (!result.repo) result.repo = arg;
     else if (!result.templatePath) result.templatePath = arg;

@@ -1,5 +1,5 @@
-import type { Label } from "./label.js";
-import type { GitHubLabel } from "../github/api/labels.api.js";
+import type { Label } from './label.js';
+import type { GitHubLabel } from '../github/api/labels.api.js';
 
 export type LabelComparison = {
   toCreate: Label[];

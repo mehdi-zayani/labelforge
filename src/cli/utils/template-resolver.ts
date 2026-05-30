@@ -1,12 +1,12 @@
-import path from "path";
-import fs from "fs";
+import path from 'path';
+import fs from 'fs';
 
-import { readConfig } from "../config/config.store.js";
-import { selectTemplate } from "../ui/template.selector.js";
-import { logger } from "../../utils/logger.js";
-import { isVerbose } from "../ui/output-mode.js";
+import { readConfig } from '../config/config.store.js';
+import { selectTemplate } from '../ui/template.selector.js';
+import { logger } from '../../utils/logger.js';
+import { isVerbose } from '../ui/output-mode.js';
 
-const PRESET_DIR = "src/templates/presets";
+const PRESET_DIR = 'src/templates/presets';
 
 export async function resolveTemplate(
   input?: string
@@ -26,12 +26,12 @@ export async function resolveTemplate(
 
   // 2. interactive selector
   if (!template) {
-    logger.warn("No template provided, opening selector...");
+    logger.warn('No template provided, opening selector...');
 
     template = await selectTemplate();
 
     if (!template) {
-      logger.info("Template selection cancelled");
+      logger.info('Template selection cancelled');
       return undefined;
     }
 
@@ -41,7 +41,7 @@ export async function resolveTemplate(
   }
 
   // 3. direct file path (.yml / .yaml)
-  if (template.endsWith(".yml") || template.endsWith(".yaml")) {
+  if (template.endsWith('.yml') || template.endsWith('.yaml')) {
     const abs = path.isAbsolute(template)
       ? template
       : path.resolve(process.cwd(), template);

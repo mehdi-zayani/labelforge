@@ -1,26 +1,21 @@
-import chalk from "chalk";
-import figlet from "figlet";
-import pkg from "../../../package.json" with { type: "json" };
-import { isSilent } from "../ui/output-mode.js";
-
+import chalk from 'chalk';
+import figlet from 'figlet';
+import pkg from '../../../package.json' with { type: 'json' };
+import { isSilent } from '../ui/output-mode.js';
 
 export function printSplash() {
   if (isSilent()) return;
-  const title = figlet.textSync("Labelforge", {
-    horizontalLayout: "default",
+  const title = figlet.textSync('Labelforge', {
+    horizontalLayout: 'default',
   });
 
   console.log(chalk.cyan(title));
 
-  console.log(chalk.gray("────────────────────────────"));
+  console.log(chalk.gray('────────────────────────────'));
 
-  console.log(
-    chalk.white("version : ") + chalk.green(pkg.version)
-  );
+  console.log(chalk.white('version : ') + chalk.green(pkg.version));
 
-  console.log(
-    chalk.white("author  : ") + chalk.blue("Mehdi Zayani")
-  );
+  console.log(chalk.white('author  : ') + chalk.blue('Mehdi Zayani'));
 
-  console.log(chalk.gray("────────────────────────────\n"));
+  console.log(chalk.gray('────────────────────────────\n'));
 }

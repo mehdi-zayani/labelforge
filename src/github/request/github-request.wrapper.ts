@@ -1,9 +1,9 @@
-import { getOctokit } from "../client/github.client.js";
-import { logger } from "../../utils/logger.js";
-import { handleGitHubError } from "../handlers/github-error.handler.js";
-import { handleRateLimit } from "../handlers/rate-limit.handler.js";
-import { withTimeout } from "../resilience/timeout.js";
-import { isDebug } from "../../utils/debug.js";
+import { getOctokit } from '../client/github.client.js';
+import { logger } from '../../utils/logger.js';
+import { handleGitHubError } from '../handlers/github-error.handler.js';
+import { handleRateLimit } from '../handlers/rate-limit.handler.js';
+import { withTimeout } from '../resilience/timeout.js';
+import { isDebug } from '../../utils/debug.js';
 
 type RequestOptions = {
   timeoutMs?: number;
@@ -48,8 +48,7 @@ async function executeWithRetry<T>(
 
       const status = (error as any)?.status;
 
-      const isRetryable =
-        status === 429 || (status >= 500 && status < 600);
+      const isRetryable = status === 429 || (status >= 500 && status < 600);
 
       handleGitHubError(error, context);
 
@@ -78,7 +77,7 @@ export const githubRequest = {
 
     const res = await executeWithRetry<any>(
       () => octokit.rest.issues.listLabelsForRepo({ owner, repo }),
-      "fetchLabels"
+      'fetchLabels'
     );
 
     return res.data.map((l: any) => ({
@@ -98,9 +97,9 @@ export const githubRequest = {
           repo,
           name: payload.name,
           color: payload.color,
-          description: payload.description ?? "",
+          description: payload.description ?? '',
         }),
-      "createLabel"
+      'createLabel'
     );
   },
 
@@ -120,9 +119,9 @@ export const githubRequest = {
           name: currentName,
           new_name: payload.name,
           color: payload.color,
-          description: payload.description ?? "",
+          description: payload.description ?? '',
         }),
-      "updateLabel"
+      'updateLabel'
     );
   },
 
@@ -131,7 +130,7 @@ export const githubRequest = {
 
     return executeWithRetry(
       () => octokit.rest.issues.deleteLabel({ owner, repo, name }),
-      "deleteLabel"
+      'deleteLabel'
     );
   },
 };

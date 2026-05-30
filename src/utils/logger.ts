@@ -1,12 +1,12 @@
-import chalk from "chalk";
-import { isDebug } from "./debug.js";
+import chalk from 'chalk';
+import { isDebug } from './debug.js';
 
 function isVerbose(): boolean {
-  return process.env.VERBOSE === "1";
+  return process.env.VERBOSE === '1';
 }
 
 function isSilent(): boolean {
-  return process.env.SILENT === "1";
+  return process.env.SILENT === '1';
 }
 
 export const logger = {

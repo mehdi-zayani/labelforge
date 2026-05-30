@@ -1,5 +1,5 @@
-import { logger } from "../../utils/logger.js";
-import { isVerbose } from "../../cli/ui/output-mode.js";
+import { logger } from '../../utils/logger.js';
+import { isVerbose } from '../../cli/ui/output-mode.js';
 
 export function withTimeout<T>(
   promise: Promise<T>,
@@ -23,7 +23,7 @@ export function withTimeout<T>(
         clearTimeout(timer);
 
         if (isVerbose()) {
-          logger.debug("[Timeout] request completed");
+          logger.debug('[Timeout] request completed');
         }
 
         resolve(res);
@@ -32,7 +32,7 @@ export function withTimeout<T>(
         clearTimeout(timer);
 
         if (isVerbose()) {
-          logger.debug("[Timeout] request failed before timeout");
+          logger.debug('[Timeout] request failed before timeout');
         }
 
         reject(err);

@@ -1,3 +1,3 @@
-export type SyncPolicy = "RESET";
+export type SyncPolicy = 'RESET';
 
-export const syncPolicy: SyncPolicy = "RESET";
+export const syncPolicy: SyncPolicy = 'RESET';

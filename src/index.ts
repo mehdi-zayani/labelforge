@@ -1,7 +1,7 @@
-import { printSplash } from "./cli/ui/splash.js";
-import { syncCommand } from "./cli/commands/sync.command.js";
-import { logger } from "./utils/logger.js";
-import pkg from "../package.json" with { type: "json" };
+import { printSplash } from './cli/ui/splash.js';
+import { syncCommand } from './cli/commands/sync.command.js';
+import { logger } from './utils/logger.js';
+import pkg from '../package.json' with { type: 'json' };
 
 function printHelp() {
   console.log(`
@@ -41,24 +41,24 @@ async function main() {
   // -------------------------
   // FLAGS (GLOBAL)
   // -------------------------
-  const isJson = args.includes("--json");
-  const isSilent = args.includes("--silent");
-  const isVerbose = args.includes("--verbose");
-  const isDryRun = args.includes("--dry-run");
+  const isJson = args.includes('--json');
+  const isSilent = args.includes('--silent');
+  const isVerbose = args.includes('--verbose');
+  const isDryRun = args.includes('--dry-run');
 
-  process.env.JSON_MODE = isJson ? "1" : "0";
-  process.env.SILENT = isSilent ? "1" : "0";
-  process.env.VERBOSE = isVerbose ? "1" : "0";
-  process.env.DRY_RUN = isDryRun ? "1" : "0";
+  process.env.JSON_MODE = isJson ? '1' : '0';
+  process.env.SILENT = isSilent ? '1' : '0';
+  process.env.VERBOSE = isVerbose ? '1' : '0';
+  process.env.DRY_RUN = isDryRun ? '1' : '0';
 
   // remove flags from args
-  const cleanArgs = args.filter((a) => !a.startsWith("--"));
+  const cleanArgs = args.filter((a) => !a.startsWith('--'));
   const command = cleanArgs[0];
 
   // -------------------------
   // HELP
   // -------------------------
-  if (command === "help" || args.includes("--help")) {
+  if (command === 'help' || args.includes('--help')) {
     printHelp();
     return;
   }
@@ -66,7 +66,11 @@ async function main() {
   // -------------------------
   // VERSION
   // -------------------------
-  if (command === "version" || args.includes("--version") || args.includes("-v")) {
+  if (
+    command === 'version' ||
+    args.includes('--version') ||
+    args.includes('-v')
+  ) {
     printVersion();
     return;
   }
@@ -74,8 +78,8 @@ async function main() {
   // -------------------------
   // LOGIN
   // -------------------------
-  if (command === "login") {
-    const { loginCommand } = await import("./cli/commands/login.command.js");
+  if (command === 'login') {
+    const { loginCommand } = await import('./cli/commands/login.command.js');
     await loginCommand();
     return;
   }
@@ -83,7 +87,7 @@ async function main() {
   // -------------------------
   // SYNC
   // -------------------------
-  if (command === "sync") {
+  if (command === 'sync') {
     printSplash();
 
     const owner = cleanArgs[1];
@@ -91,16 +95,17 @@ async function main() {
     const templateInput = cleanArgs[3];
 
     if (!owner || !repo) {
-      logger.error("Usage: sync owner repo [template] [--dry-run]");
+      logger.error('Usage: sync owner repo [template] [--dry-run]');
       process.exit(1);
     }
 
-    const { resolveTemplate } = await import("./cli/utils/template-resolver.js");
+    const { resolveTemplate } =
+      await import('./cli/utils/template-resolver.js');
 
     const templatePath = await resolveTemplate(templateInput);
 
     if (!templatePath) {
-      logger.error("Template resolution failed");
+      logger.error('Template resolution failed');
       process.exit(1);
     }
 
@@ -108,7 +113,7 @@ async function main() {
     return;
   }
 
-  logger.error("Unknown command. Use --help");
+  logger.error('Unknown command. Use --help');
   process.exit(1);
 }
 

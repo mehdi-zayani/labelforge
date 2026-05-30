@@ -1,6 +1,6 @@
-import { getBackoffDelay } from "./backoff.js";
-import { logger } from "../../utils/logger.js";
-import { isVerbose } from "../../cli/ui/output-mode.js";
+import { getBackoffDelay } from './backoff.js';
+import { logger } from '../../utils/logger.js';
+import { isVerbose } from '../../cli/ui/output-mode.js';
 
 type RetryOptions = {
   retries?: number;
@@ -27,8 +27,7 @@ export async function retry<T>(
 
       const status = error?.status;
 
-      const isRetryable =
-        status === 429 || (status >= 500 && status < 600);
+      const isRetryable = status === 429 || (status >= 500 && status < 600);
 
       if (!isRetryable || attempt === retries) {
         throw error;
@@ -38,7 +37,7 @@ export async function retry<T>(
 
       if (isVerbose()) {
         logger.debug(
-          `[Retry] retrying in ${delay}ms (status=${status ?? "unknown"})`
+          `[Retry] retrying in ${delay}ms (status=${status ?? 'unknown'})`
         );
       }
 

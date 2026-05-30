@@ -1,11 +1,8 @@
-import type { GitHubLabel } from "../github/api/labels.api.js";
+import type { GitHubLabel } from '../github/api/labels.api.js';
 
-import {
-  createLabel,
-  deleteLabel,
-} from "../github/api/labels.api.js";
+import { createLabel, deleteLabel } from '../github/api/labels.api.js';
 
-import { logger } from "../utils/logger.js";
+import { logger } from '../utils/logger.js';
 
 function sleep(ms: number) {
   return new Promise((r) => setTimeout(r, ms));
@@ -32,7 +29,7 @@ export async function syncLabels(
   templateLabels: GitHubLabel[],
   dryRun: boolean = true
 ) {
-  logger.info("Cleaning existing labels...");
+  logger.info('Cleaning existing labels...');
 
   for (const label of remoteLabels) {
     if (dryRun) {
@@ -41,9 +38,7 @@ export async function syncLabels(
     }
 
     try {
-      await retry(() =>
-        deleteLabel(owner, repo, label.name)
-      );
+      await retry(() => deleteLabel(owner, repo, label.name));
 
       logger.success(`DELETE ${label.name}`);
 
@@ -53,7 +48,7 @@ export async function syncLabels(
     }
   }
 
-  logger.info("Creating template labels...");
+  logger.info('Creating template labels...');
 
   for (const label of templateLabels) {
     if (dryRun) {
@@ -66,7 +61,7 @@ export async function syncLabels(
         createLabel(owner, repo, {
           name: label.name,
           color: label.color,
-          description: label.description ?? "",
+          description: label.description ?? '',
         })
       );
 

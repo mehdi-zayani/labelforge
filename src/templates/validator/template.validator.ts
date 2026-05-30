@@ -1,23 +1,23 @@
-import type { GitHubLabelTemplate } from "../types/template.types.js";
+import type { GitHubLabelTemplate } from '../types/template.types.js';
 
 export function validateTemplate(template: unknown): GitHubLabelTemplate {
-  if (!template || typeof template !== "object") {
-    throw new Error("Invalid template");
+  if (!template || typeof template !== 'object') {
+    throw new Error('Invalid template');
   }
 
   const t = template as GitHubLabelTemplate;
 
   if (!t.version) {
-    throw new Error("Template missing version");
+    throw new Error('Template missing version');
   }
 
   if (!Array.isArray(t.templates)) {
-    throw new Error("Invalid templates structure");
+    throw new Error('Invalid templates structure');
   }
 
   for (const group of t.templates) {
     if (!group.group) {
-      throw new Error("Template group missing name");
+      throw new Error('Template group missing name');
     }
 
     if (!Array.isArray(group.labels)) {

@@ -1,7 +1,7 @@
-import { logger } from "../../utils/logger.js";
+import { logger } from '../../utils/logger.js';
 
 export function handleCliError(error: any) {
-  logger.error("CLI execution failed");
+  logger.error('CLI execution failed');
 
   if (error instanceof Error) {
     logger.error(error.message);

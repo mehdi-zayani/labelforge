@@ -1,6 +1,6 @@
-import { getOctokit } from "../client/github.client.js";
-import { logger } from "../../utils/logger.js";
-import { isVerbose } from "../../cli/ui/output-mode.js";
+import { getOctokit } from '../client/github.client.js';
+import { logger } from '../../utils/logger.js';
+import { isVerbose } from '../../cli/ui/output-mode.js';
 
 function sleep(ms: number) {
   return new Promise((r) => setTimeout(r, ms));
@@ -18,7 +18,7 @@ async function retry<T>(
 
     if (isVerbose()) {
       logger.warn(
-        `[GitHub] validate repo failed (status=${status ?? "unknown"})`
+        `[GitHub] validate repo failed (status=${status ?? 'unknown'})`
       );
     }
 

@@ -1,4 +1,4 @@
-import { githubRequest } from "../../github/request/github-request.wrapper.js";
+import { githubRequest } from '../../github/request/github-request.wrapper.js';
 
 export async function applyTemplate(
   owner: string,
@@ -8,13 +8,13 @@ export async function applyTemplate(
 ) {
   const { toCreate, toUpdate } = diff;
 
-  console.log("\n--- APPLY PLAN ---");
-  console.log("To create:", toCreate.length);
-  console.log("To update:", toUpdate.length);
-  console.log("To ignore:", diff.toIgnore.length);
+  console.log('\n--- APPLY PLAN ---');
+  console.log('To create:', toCreate.length);
+  console.log('To update:', toUpdate.length);
+  console.log('To ignore:', diff.toIgnore.length);
 
   if (dryRun) {
-    console.log("\n[DRY-RUN] No changes applied");
+    console.log('\n[DRY-RUN] No changes applied');
     return;
   }
 
@@ -23,13 +23,8 @@ export async function applyTemplate(
   }
 
   for (const item of toUpdate) {
-    await githubRequest.updateLabel(
-      owner,
-      repo,
-      item.current.name,
-      item.next
-    );
+    await githubRequest.updateLabel(owner, repo, item.current.name, item.next);
   }
 
-  console.log("\n[SUCCESS] Template applied successfully");
+  console.log('\n[SUCCESS] Template applied successfully');
 }

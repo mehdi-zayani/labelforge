@@ -1,8 +1,8 @@
-import fs from "fs";
-import path from "path";
-import yaml from "js-yaml";
-import type { GitHubLabelTemplate } from "../types/template.types.js";
-import { validateTemplate } from "../validator/template.validator.js";
+import fs from 'fs';
+import path from 'path';
+import yaml from 'js-yaml';
+import type { GitHubLabelTemplate } from '../types/template.types.js';
+import { validateTemplate } from '../validator/template.validator.js';
 
 export function loadTemplate(filePath: string): GitHubLabelTemplate {
   const absolutePath = path.isAbsolute(filePath)
@@ -13,7 +13,7 @@ export function loadTemplate(filePath: string): GitHubLabelTemplate {
     throw new Error(`Template not found: ${absolutePath}`);
   }
 
-  const raw = fs.readFileSync(absolutePath, "utf-8");
+  const raw = fs.readFileSync(absolutePath, 'utf-8');
 
   let parsed: unknown;
 

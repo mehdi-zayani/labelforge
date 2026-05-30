@@ -1,4 +1,4 @@
-import { syncCommand } from "../commands/sync.command.js";
+import { syncCommand } from '../commands/sync.command.js';
 
 export async function cliRunner(context: {
   owner: string;
@@ -7,7 +7,7 @@ export async function cliRunner(context: {
   dryRun: boolean;
 }) {
   if (!context.owner || !context.repo) {
-    throw new Error("Missing required CLI context (owner/repo)");
+    throw new Error('Missing required CLI context (owner/repo)');
   }
 
   return syncCommand(

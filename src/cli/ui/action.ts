@@ -1,8 +1,8 @@
-import ora from "ora";
-import chalk from "chalk";
-import { isSilent } from "./output-mode.js";
+import ora from 'ora';
+import chalk from 'chalk';
+import { isSilent } from './output-mode.js';
 
-const isDebug = process.env.DEBUG === "1";
+const isDebug = process.env.DEBUG === '1';
 
 export async function runAction<T>(
   label: string,
@@ -14,9 +14,9 @@ export async function runAction<T>(
   try {
     const result = await fn();
     spinner.succeed(chalk.green(label));
-    if (process.env.DRY_RUN === "1") {
-  console.log(chalk.magenta(`[DRY-RUN] ${label}`));
-}
+    if (process.env.DRY_RUN === '1') {
+      console.log(chalk.magenta(`[DRY-RUN] ${label}`));
+    }
     return result;
   } catch (err) {
     spinner.fail(chalk.red(label));
@@ -26,9 +26,8 @@ export async function runAction<T>(
 
 export function debugLog(...args: any[]) {
   if (isDebug) {
-    console.log("[DEBUG]", ...args);
+    console.log('[DEBUG]', ...args);
   }
-  
 }
 export function dryRunLog(msg: string) {
   console.log(chalk.magenta(`[DRY-RUN] ${msg}`));
