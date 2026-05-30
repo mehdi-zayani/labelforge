@@ -1,8 +1,11 @@
 import chalk from "chalk";
 import figlet from "figlet";
 import pkg from "../../../package.json" with { type: "json" };
+import { isSilent } from "../ui/output-mode.js";
+
 
 export function printSplash() {
+  if (isSilent()) return;
   const title = figlet.textSync("Labelforge", {
     horizontalLayout: "default",
   });

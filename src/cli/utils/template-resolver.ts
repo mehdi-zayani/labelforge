@@ -4,6 +4,7 @@ import fs from "fs";
 import { readConfig } from "../config/config.store.js";
 import { selectTemplate } from "../ui/template.selector.js";
 import { logger } from "../../utils/logger.js";
+import { isVerbose } from "../ui/output-mode.js";
 
 const PRESET_DIR = "src/templates/presets";
 
@@ -17,6 +18,10 @@ export async function resolveTemplate(
   // 1. fallback config
   if (!template && config.defaultTemplate) {
     template = config.defaultTemplate;
+
+    if (isVerbose()) {
+      logger.debug(`[TEMPLATE] fallback config used: ${template}`);
+    }
   }
 
   // 2. interactive selector
@@ -28,6 +33,10 @@ export async function resolveTemplate(
     if (!template) {
       logger.info("Template selection cancelled");
       return undefined;
+    }
+
+    if (isVerbose()) {
+      logger.debug(`[TEMPLATE] selected: ${template}`);
     }
   }
 
@@ -41,6 +50,10 @@ export async function resolveTemplate(
       throw new Error(`Template file not found: ${abs}`);
     }
 
+    if (isVerbose()) {
+      logger.debug(`[TEMPLATE] file path resolved: ${abs}`);
+    }
+
     return abs;
   }
 
@@ -52,6 +65,10 @@ export async function resolveTemplate(
 
   if (!fs.existsSync(presetPath)) {
     throw new Error(`Preset not found: ${template}`);
+  }
+
+  if (isVerbose()) {
+    logger.debug(`[TEMPLATE] preset resolved: ${presetPath}`);
   }
 
   return presetPath;

@@ -13,15 +13,20 @@ USAGE:
 COMMANDS:
   sync <owner> <repo> [template]   Sync GitHub labels from a template
   login                            Authenticate with GitHub
+  help                             Show help
 
 OPTIONS:
   --dry-run                        Simulate actions without applying changes
+  --json                           Output machine-readable result only
+  --silent                         No UI output (CI mode)
+  --verbose                        Detailed logs
   --help                           Show help
   --version                        Show CLI version
 
 EXAMPLES:
   labelforge sync mehdi-zayani repo
   labelforge sync mehdi-zayani repo backend --dry-run
+  labelforge sync mehdi-zayani repo --json backend
   labelforge login
 `);
 }
@@ -33,12 +38,27 @@ function printVersion() {
 async function main() {
   const args = process.argv.slice(2);
 
-  const command = args[0];
+  // -------------------------
+  // FLAGS (GLOBAL)
+  // -------------------------
+  const isJson = args.includes("--json");
+  const isSilent = args.includes("--silent");
+  const isVerbose = args.includes("--verbose");
+  const isDryRun = args.includes("--dry-run");
+
+  process.env.JSON_MODE = isJson ? "1" : "0";
+  process.env.SILENT = isSilent ? "1" : "0";
+  process.env.VERBOSE = isVerbose ? "1" : "0";
+  process.env.DRY_RUN = isDryRun ? "1" : "0";
+
+  // remove flags from args
+  const cleanArgs = args.filter((a) => !a.startsWith("--"));
+  const command = cleanArgs[0];
 
   // -------------------------
   // HELP
   // -------------------------
-  if (command === "--help" || command === "help") {
+  if (command === "help" || args.includes("--help")) {
     printHelp();
     return;
   }
@@ -46,7 +66,7 @@ async function main() {
   // -------------------------
   // VERSION
   // -------------------------
-  if (command === "--version" || command === "-v") {
+  if (command === "version" || args.includes("--version") || args.includes("-v")) {
     printVersion();
     return;
   }
@@ -66,26 +86,14 @@ async function main() {
   if (command === "sync") {
     printSplash();
 
-    const owner = args[1];
-    const repo = args[2];
+    const owner = cleanArgs[1];
+    const repo = cleanArgs[2];
+    const templateInput = cleanArgs[3];
 
     if (!owner || !repo) {
       logger.error("Usage: sync owner repo [template] [--dry-run]");
       process.exit(1);
     }
-
-    const dryRun = args.includes("--dry-run");
-
-    if (dryRun) {
-      process.env.DRY_RUN = "1";
-      logger.warn("DRY-RUN MODE ON");
-    }
-
-    const filteredArgs = args.filter(
-      (a) => a !== "sync" && a !== owner && a !== repo && a !== "--dry-run"
-    );
-
-    const templateInput = filteredArgs[0];
 
     const { resolveTemplate } = await import("./cli/utils/template-resolver.js");
 
@@ -96,14 +104,11 @@ async function main() {
       process.exit(1);
     }
 
-    await syncCommand(owner, repo, templatePath, dryRun);
+    await syncCommand(owner, repo, templatePath, isDryRun);
     return;
   }
 
-  // -------------------------
-  // DEFAULT
-  // -------------------------
-  logger.error("Unknown command. Use --help to see usage.");
+  logger.error("Unknown command. Use --help");
   process.exit(1);
 }
 

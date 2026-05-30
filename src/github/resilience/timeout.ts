@@ -1,18 +1,18 @@
 import { logger } from "../../utils/logger.js";
-import { isDebug } from "../../utils/debug.js";
+import { isVerbose } from "../../cli/ui/output-mode.js";
 
 export function withTimeout<T>(
   promise: Promise<T>,
   timeoutMs: number
 ): Promise<T> {
-  if (isDebug()) {
+  if (isVerbose()) {
     logger.debug(`[Timeout] timeout=${timeoutMs}ms`);
   }
 
   return new Promise<T>((resolve, reject) => {
     const timer = setTimeout(() => {
-      if (isDebug()) {
-        logger.warn(`[Timeout] request exceeded ${timeoutMs}ms`);
+      if (isVerbose()) {
+        logger.debug(`[Timeout] request exceeded ${timeoutMs}ms`);
       }
 
       reject(new Error(`GitHub request timeout (${timeoutMs}ms)`));
@@ -22,7 +22,7 @@ export function withTimeout<T>(
       .then((res) => {
         clearTimeout(timer);
 
-        if (isDebug()) {
+        if (isVerbose()) {
           logger.debug("[Timeout] request completed");
         }
 
@@ -31,8 +31,8 @@ export function withTimeout<T>(
       .catch((err) => {
         clearTimeout(timer);
 
-        if (isDebug()) {
-          logger.warn("[Timeout] request failed before timeout");
+        if (isVerbose()) {
+          logger.debug("[Timeout] request failed before timeout");
         }
 
         reject(err);
