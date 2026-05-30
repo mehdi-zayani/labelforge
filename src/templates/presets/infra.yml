@@ -1,0 +1,107 @@
+version: '1.0'
+
+templates:
+  - group: infra
+    labels:
+
+      # -------------------------
+      # INFRA CORE
+      # -------------------------
+      - name: infra
+        color: '6F42C1'
+        description: 'Infrastructure related work'
+
+      - name: cloud
+        color: '1D76DB'
+        description: 'Cloud resources (AWS, GCP, Azure)'
+
+      - name: networking
+        color: '0052CC'
+        description: 'Networking / DNS / routing'
+
+      - name: storage
+        color: '0E8A16'
+        description: 'Storage systems / volumes / buckets'
+
+      - name: compute
+        color: '5319E7'
+        description: 'Compute resources / VMs'
+
+      # -------------------------
+      # ARCHITECTURE
+      # -------------------------
+      - name: architecture
+        color: 'C5DEF5'
+        description: 'System architecture design'
+
+      - name: scalability
+        color: 'FBCA04'
+        description: 'Scalability improvements'
+
+      - name: performance
+        color: '1D76DB'
+        description: 'Infrastructure performance optimization'
+
+      # -------------------------
+      # SECURITY
+      # -------------------------
+      - name: security
+        color: 'B60205'
+        description: 'Security / hardening / IAM'
+
+      - name: secrets
+        color: 'E99695'
+        description: 'Secrets management'
+
+      - name: compliance
+        color: '8A2BE2'
+        description: 'Compliance / governance'
+
+      # -------------------------
+      # CONFIGURATION
+      # -------------------------
+      - name: config
+        color: 'D4C5F9'
+        description: 'Infrastructure configuration'
+
+      - name: env
+        color: 'C2E0C6'
+        description: 'Environment setup'
+
+      # -------------------------
+      # OPS / RELIABILITY
+      # -------------------------
+      - name: monitoring
+        color: '0E8A16'
+        description: 'Monitoring / observability'
+
+      - name: logging
+        color: '5319E7'
+        description: 'Logging systems'
+
+      - name: alerting
+        color: 'D73A4A'
+        description: 'Alerts / incident detection'
+
+      - name: incident
+        color: 'B60205'
+        description: 'Production incidents'
+
+      - name: backup
+        color: 'FBCA04'
+        description: 'Backup / restore systems'
+
+      # -------------------------
+      # AUTOMATION
+      # -------------------------
+      - name: automation
+        color: '0366D6'
+        description: 'Infrastructure automation'
+
+      - name: terraform
+        color: '5A29E4'
+        description: 'Terraform infrastructure as code'
+
+      - name: docker
+        color: '0E8A16'
+        description: 'Containerization'

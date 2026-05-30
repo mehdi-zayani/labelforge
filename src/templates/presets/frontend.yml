@@ -1,0 +1,161 @@
+version: '1.0'
+
+templates:
+  - group: frontend
+    labels:
+
+      # -------------------------
+      # CORE UI / FEATURE
+      # -------------------------
+      - name: ui
+        color: '1D76DB'
+        description: 'UI components and layout'
+
+      - name: component
+        color: '0052CC'
+        description: 'Reusable UI components'
+
+      - name: page
+        color: '2EA44F'
+        description: 'Application pages / routes'
+
+      - name: feature
+        color: '0E8A16'
+        description: 'New frontend feature'
+
+      - name: enhancement
+        color: '5319E7'
+        description: 'UI/UX improvement'
+
+      - name: refactor
+        color: 'FBCA04'
+        description: 'Code refactoring without behavior change'
+
+      # -------------------------
+      # STYLING / DESIGN
+      # -------------------------
+      - name: style
+        color: 'E99695'
+        description: 'CSS / styling changes'
+
+      - name: theme
+        color: '8A2BE2'
+        description: 'Theme / design system changes'
+
+      - name: responsive
+        color: '0E8A16'
+        description: 'Responsive design adjustments'
+
+      - name: accessibility
+        color: 'B60205'
+        description: 'A11y improvements'
+
+      # -------------------------
+      # STATE / DATA
+      # -------------------------
+      - name: state
+        color: '5319E7'
+        description: 'State management (Redux, Zustand, etc.)'
+
+      - name: api
+        color: '1D76DB'
+        description: 'API integration'
+
+      - name: query
+        color: '0052CC'
+        description: 'Data fetching / queries'
+
+      - name: cache
+        color: 'C2E0C6'
+        description: 'Caching logic'
+
+      # -------------------------
+      # PERFORMANCE
+      # -------------------------
+      - name: performance
+        color: '1D76DB'
+        description: 'Performance optimization'
+
+      - name: lazy-loading
+        color: '0E8A16'
+        description: 'Lazy loading / code splitting'
+
+      - name: bundle
+        color: 'FBCA04'
+        description: 'Bundle size optimization'
+
+      # -------------------------
+      # QUALITY / TESTING
+      # -------------------------
+      - name: bug
+        color: 'D73A4A'
+        description: 'Bug or defect'
+
+      - name: hotfix
+        color: 'B60205'
+        description: 'Critical fix in production'
+
+      - name: test
+        color: 'B60205'
+        description: 'Unit / integration / e2e tests'
+
+      - name: flaky-test
+        color: 'F9D0C4'
+        description: 'Unstable test'
+
+      - name: regression
+        color: 'E99695'
+        description: 'Previously working feature broken'
+
+      # -------------------------
+      # TOOLING / DEV EXPERIENCE
+      # -------------------------
+      - name: build
+        color: '0366D6'
+        description: 'Build system changes'
+
+      - name: lint
+        color: '0E8A16'
+        description: 'Linting / formatting'
+
+      - name: types
+        color: '5319E7'
+        description: 'TypeScript / type improvements'
+
+      - name: deps
+        color: 'FBCA04'
+        description: 'Dependency updates'
+
+      # -------------------------
+      # INFRA / CONFIG
+      # -------------------------
+      - name: config
+        color: '8A2BE2'
+        description: 'Configuration changes'
+
+      - name: env
+        color: '6F42C1'
+        description: 'Environment variables / setup'
+
+      - name: ci
+        color: '0366D6'
+        description: 'CI/CD pipelines'
+
+      - name: deployment
+        color: '1F883D'
+        description: 'Deployment process'
+
+      # -------------------------
+      # DOCS / MAINTENANCE
+      # -------------------------
+      - name: docs
+        color: '0E8A16'
+        description: 'Documentation updates'
+
+      - name: chore
+        color: 'D4C5F9'
+        description: 'Maintenance tasks'
+
+      - name: cleanup
+        color: 'C2E0C6'
+        description: 'Code cleanup'

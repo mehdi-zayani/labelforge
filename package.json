@@ -1,6 +1,6 @@
 {
   "name": "labelforge",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "CLI tool to manage and synchronize GitHub repository labels from configuration files",
   "keywords": [
     "github",
@@ -14,19 +14,44 @@
   "license": "MIT",
   "type": "module",
   "main": "dist/index.js",
+  "bin": {
+    "labelforge": "dist/index.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
-    "start": "node dist/bootstrap.js",
+    "start": "node dist/index.js",
     "dev": "tsc -w",
     "test": "echo \"no tests yet\""
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/<your-org>/labelforge.git"
+  },
+  "bugs": {
+    "url": "https://github.com/<your-org>/labelforge/issues"
+  },
+  "homepage": "https://github.com/<your-org>/labelforge#readme",
   "devDependencies": {
     "@types/node": "^25.6.2",
+    "@types/prompts": "^2.4.9",
+    "prettier": "^3.8.3",
     "typescript": "^6.0.3"
   },
   "dependencies": {
     "@octokit/rest": "^22.0.1",
+    "@types/js-yaml": "^4.0.9",
+    "chalk": "^5.6.2",
     "dotenv": "^17.4.2",
+    "figlet": "^1.11.0",
+    "js-yaml": "^4.1.1",
+    "ora": "^9.4.0",
+    "prompts": "^2.4.2",
     "yaml": "^2.9.0"
   }
 }

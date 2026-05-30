@@ -1,0 +1,145 @@
+version: '1.0'
+
+templates:
+  - group: backend
+    labels:
+
+      # -------------------------
+      # CORE API
+      # -------------------------
+      - name: api
+        color: '1D76DB'
+        description: 'REST / GraphQL API layer'
+
+      - name: controller
+        color: '0052CC'
+        description: 'HTTP controllers / routing layer'
+
+      - name: service
+        color: '2EA44F'
+        description: 'Business logic layer'
+
+      - name: repository
+        color: '5319E7'
+        description: 'Data access / persistence layer'
+
+      - name: middleware
+        color: '0E8A16'
+        description: 'Request middleware / interceptors'
+
+      # -------------------------
+      # FEATURE / DEVELOPMENT
+      # -------------------------
+      - name: feature
+        color: '0E8A16'
+        description: 'New feature implementation'
+
+      - name: enhancement
+        color: '5319E7'
+        description: 'Improvement or refactor'
+
+      - name: refactor
+        color: 'FBCA04'
+        description: 'Code refactoring without behavior change'
+
+      - name: spike
+        color: 'C2E0C6'
+        description: 'Technical exploration / PoC'
+
+      # -------------------------
+      # BUG / QUALITY
+      # -------------------------
+      - name: bug
+        color: 'D73A4A'
+        description: 'Bug or defect'
+
+      - name: hotfix
+        color: 'B60205'
+        description: 'Critical production fix'
+
+      - name: regression
+        color: 'E99695'
+        description: 'Previously working feature broken'
+
+      - name: test
+        color: 'B60205'
+        description: 'Unit / integration / e2e tests'
+
+      - name: flaky-test
+        color: 'F9D0C4'
+        description: 'Unstable or flaky test'
+
+      # -------------------------
+      # DATA / DB
+      # -------------------------
+      - name: database
+        color: '6F42C1'
+        description: 'Database changes / schema'
+
+      - name: migration
+        color: '5319E7'
+        description: 'DB migration scripts'
+
+      - name: performance
+        color: '1D76DB'
+        description: 'Performance optimization'
+
+      # -------------------------
+      # INFRA / DEVOPS
+      # -------------------------
+      - name: infra
+        color: '6F42C1'
+        description: 'Infrastructure / DevOps'
+
+      - name: docker
+        color: '0E8A16'
+        description: 'Docker / containerization'
+
+      - name: ci
+        color: '0366D6'
+        description: 'CI/CD pipelines'
+
+      - name: deployment
+        color: '1F883D'
+        description: 'Deployment / release process'
+
+      - name: config
+        color: '8A2BE2'
+        description: 'Configuration changes'
+
+      # -------------------------
+      # ARCHITECTURE
+      # -------------------------
+      - name: architecture
+        color: 'C5DEF5'
+        description: 'System architecture changes'
+
+      - name: security
+        color: 'B60205'
+        description: 'Security-related changes'
+
+      - name: auth
+        color: 'E99695'
+        description: 'Authentication / authorization'
+
+      # -------------------------
+      # MAINTENANCE
+      # -------------------------
+      - name: deps
+        color: 'FBCA04'
+        description: 'Dependency updates'
+
+      - name: cleanup
+        color: 'C2E0C6'
+        description: 'Code or repo cleanup'
+
+      - name: chore
+        color: 'D4C5F9'
+        description: 'Maintenance tasks'
+
+      # -------------------------
+      # DOCS
+      # -------------------------
+      - name: docs
+        color: '0E8A16'
+        description: 'Documentation updates'
