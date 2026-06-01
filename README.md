@@ -1,506 +1,412 @@
-# Labelforge
+  # Labelforge
 
-![npm version](https://img.shields.io/npm/v/labelforge)
-![npm downloads](https://img.shields.io/npm/dm/labelforge)
-![license](https://img.shields.io/npm/l/labelforge)
-![node](https://img.shields.io/node/v/labelforge)
-![CI](https://github.com/mehdi-zayani/labelforge/actions/workflows/ci.yml/badge.svg)
-![issues](https://img.shields.io/github/issues/mehdi-zayani/labelforge)
-![pull requests](https://img.shields.io/github/issues-pr/mehdi-zayani/labelforge)
-![last commit](https://img.shields.io/github/last-commit/mehdi-zayani/labelforge)
+  ![npm version](https://img.shields.io/npm/v/labelforge)
+  ![npm downloads](https://img.shields.io/npm/dm/labelforge)
+  ![license](https://img.shields.io/npm/l/labelforge)
+  ![node](https://img.shields.io/node/v/labelforge)
+  ![CI](https://github.com/mehdi-zayani/labelforge/actions/workflows/ci.yml/badge.svg)
+  ![issues](https://img.shields.io/github/issues/mehdi-zayani/labelforge)
+  ![pull requests](https://img.shields.io/github/issues-pr/mehdi-zayani/labelforge)
+  ![last commit](https://img.shields.io/github/last-commit/mehdi-zayani/labelforge)
 
 
-Labelforge is a CLI tool that synchronizes GitHub repository labels from reusable YAML templates.
+  Labelforge is a CLI tool that synchronizes GitHub repository labels from reusable YAML templates.
 
-It helps teams standardize label management across repositories by providing a simple, repeatable, and version-controlled workflow.
+  It helps teams standardize label management across repositories by providing a simple, repeatable, and version-controlled workflow.
 
-Labelforge supports:
+  Labelforge supports:
 
-* GitHub label synchronization from version-controlled YAML templates
-* Dry-run mode to preview changes safely before applying them
-* Built-in presets for common project types (backend, frontend, devops, infrastructure)
-* Interactive template selection when no template is provided
-* CI/CD-friendly JSON output for automation workflows
-* Robust GitHub API handling (retry, timeout, rate-limit awareness)
-* Local configuration support (authentication + default template)
-* Cross-platform execution via Node.js (Linux, macOS, Windows)
+  * GitHub label synchronization from version-controlled YAML templates
+  * Dry-run mode to preview changes safely before applying them
+  * Built-in presets for common project types (backend, frontend, devops, infrastructure)
+  * Interactive template selection when no template is provided
+  * CI/CD-friendly JSON output for automation workflows
+  * Robust GitHub API handling (retry, timeout, rate-limit awareness)
+  * Local configuration support (authentication + default template)
+  * Cross-platform execution via Node.js (Linux, macOS, Windows)
 
-The project is designed for developers, open-source maintainers, and engineering teams who need consistent label management across multiple repositories.
+  The project is designed for developers, open-source maintainers, and engineering teams who need consistent label management across multiple repositories.
 
-## Installation
+  ## Installation
 
-### Requirements
+  ### Requirements
 
-* Node.js 18 or later
-* A GitHub account
-* A GitHub Personal Access Token (PAT) with repository label permissions
+  * Node.js 18 or later
+  * A GitHub account
+  * A GitHub Personal Access Token (PAT) with repository label permissions
 
-### Install from npm
+  ### Install from npm
 
-```bash
-npm install -g labelforge
-```
+  ```bash
+  npm install -g labelforge
+  ```
 
-### Verify Installation
+  ### Verify Installation
 
-```bash
-labelforge --version
-```
+  ```bash
+  labelforge --version
+  ```
 
-Expected output:
+  Expected output:
 
-```text
-labelforge version <version>
-```
+  ```text
+  labelforge version <version>
+  ```
 
-### GitHub Authentication
+  ### GitHub Authentication
 
-Before using Labelforge, configure your GitHub token:
+  Before using Labelforge, configure your GitHub token:
 
-```bash
-labelforge login
-```
+  ```bash
+  labelforge login
+  ```
 
-You will be prompted to enter your GitHub Personal Access Token.
+  You will be prompted to enter your GitHub Personal Access Token.
 
-The token is stored locally in:
+  The token is stored locally in:
 
-```text
-~/.labelforge/config.json
-```
-## Quick Start
+  ```text
+  ~/.labelforge/config.json
+  ```
+  ## Quick Start
 
-### 1. Authenticate with GitHub
+  ### 1. Authenticate with GitHub
 
-```bash
-labelforge login
-```
+  ```bash
+  labelforge login
+  ```
 
-### 2. Create a Template
+  ### 2. Preview Changes
 
-```yaml
-version: "1.0"
+  ```bash
+  labelforge sync owner repository labels.yml --dry-run
+  ```
 
-templates:
-  - group: backend
-    labels:
-      - name: bug
-        color: d73a4a
-        description: Something is not working
+  ### 3. Apply Changes
 
-      - name: enhancement
-        color: a2eeef
-        description: New feature or improvement
-```
+  ```bash
+  labelforge sync owner repository labels.yml
+  ```
 
-Save the file as:
+  ## Templates
 
-```text
-labels.yml
-```
+  Labelforge uses YAML templates or built-in presets to define GitHub labels.
 
-### 3. Preview Changes
+  ### Custom template
 
-```bash
-labelforge sync owner repository labels.yml --dry-run
-```
+  You can also use a YAML file:
+  ```bash
+  labelforge sync owner repository labels.yml
+  ```
+  ### Template structure (example)
+  ```yaml
+  version: "1.0"
 
-### 4. Apply Changes
+  templates:
+    - group: backend
+      labels:
+        - name: bug
+          color: d73a4a
+          description: Something is not working
 
-```bash
-labelforge sync owner repository labels.yml
-```
+        - name: enhancement
+          color: a2eeef
+          description: New feature or improvement
+  ```
 
-### 5. Use a Built-In Preset
+  ## Commands
 
-```bash
-labelforge sync owner repository frontend
-```
+  ### login
 
-Available presets:
-```
-* backend
-* frontend
-* devops
-* infra
-```
-## Templates
+  Stores a GitHub Personal Access Token for future operations.
 
-Labelforge uses YAML templates to define GitHub labels.
+  ```bash
+  labelforge login
+  ```
 
-### Template Structure
+  ---
 
-```yaml
-version: "1.0"
+  ### sync
 
-templates:
-  - group: backend
-    labels:
-      - name: bug
-        color: d73a4a
-        description: Something is not working
+  Synchronizes GitHub repository labels from a template.
 
-      - name: enhancement
-        color: a2eeef
-        description: New feature or improvement
-```
+  ```bash
+  labelforge sync <owner> <repository> [template]
+  ```
 
-### Root Properties
+  #### Parameters
 
-| Property  | Type   | Required | Description                |
-| --------- | ------ | -------- | -------------------------- |
-| version   | string | Yes      | Template schema version    |
-| templates | array  | Yes      | Collection of label groups |
+  | Parameter  | Required | Description                      |
+  | ---------- | -------- | -------------------------------- |
+  | owner      | Yes      | GitHub repository owner          |
+  | repository | Yes      | GitHub repository name           |
+  | template   | No       | Template file or built-in preset |
 
-### Group Properties
+  #### Examples
 
-| Property | Type   | Required | Description                   |
-| -------- | ------ | -------- | ----------------------------- |
-| group    | string | Yes      | Group name                    |
-| labels   | array  | Yes      | Labels belonging to the group |
+  ```bash
+  labelforge sync mehdi-zayani/my-repository backend
+  ```
 
-### Label Properties
+  ```bash
+  labelforge sync mehdi-zayani/my-repository labels.yml
+  ```
 
-| Property    | Type   | Required | Description                       |
-| ----------- | ------ | -------- | --------------------------------- |
-| name        | string | Yes      | GitHub label name                 |
-| color       | string | Yes      | Label color in hexadecimal format |
-| description | string | No       | GitHub label description          |
+  ```bash
+  labelforge sync mehdi-zayani/my-repository labels.yml --dry-run
+  ```
 
-### Example
+  ---
 
-```yaml
-version: "1.0"
+  ### help
 
-templates:
-  - group: backend
-    labels:
-      - name: api
-        color: 0052cc
-        description: API related work
+  Displays command documentation.
 
-      - name: database
-        color: 5319e7
-        description: Database related work
+  ```bash
+  labelforge help
+  ```
 
-      - name: bug
-        color: d73a4a
-        description: Something is not working
+  or
 
-  - group: quality
-    labels:
-      - name: testing
-        color: 0e8a16
-        description: Testing activities
+  ```bash
+  labelforge --help
+  ```
 
-      - name: technical-debt
-        color: fbca04
-        description: Refactoring and maintenance
-```
+  ---
 
-### Built-In Presets
+  ### version
 
-Labelforge currently ships with the following presets:
+  Displays the installed version.
 
-* backend
-* frontend
-* devops
-* infra
+  ```bash
+  labelforge --version
+  ```
 
-Presets can be used directly without creating a custom template file.
-## Commands
+  ---
 
-### login
+  ## Global Options
 
-Stores a GitHub Personal Access Token for future operations.
+  | Option    | Description                           |
+  | --------- | ------------------------------------- |
+  | --dry-run | Preview changes without applying them |
+  | --json    | Output machine-readable JSON          |
+  | --silent  | Disable UI output                     |
+  | --verbose | Enable detailed logs                  |
+  | --help    | Display help information              |
+  | --version | Display current version               |
 
-```bash
-labelforge login
-```
+  ---
 
----
+  ## Exit Codes
 
-### sync
+  | Code | Meaning          |
+  | ---- | ---------------- |
+  | 0    | Success          |
+  | 1    | Execution failed |
 
-Synchronizes GitHub repository labels from a template.
+  ## Examples
 
-```bash
-labelforge sync <owner> <repository> [template]
-```
+  ### Synchronize Labels Using a Built-In Preset
 
-#### Parameters
+  ```bash
+  labelforge sync my-org/my-repository backend
+  ```
 
-| Parameter  | Required | Description                      |
-| ---------- | -------- | -------------------------------- |
-| owner      | Yes      | GitHub repository owner          |
-| repository | Yes      | GitHub repository name           |
-| template   | No       | Template file or built-in preset |
+  ---
 
-#### Examples
+  ### Synchronize Labels Using a Custom Template
 
-```bash
-labelforge sync mehdi-zayani/my-repository backend
-```
+  ```bash
+  labelforge sync my-org/my-repository labels.yml
+  ```
 
-```bash
-labelforge sync mehdi-zayani/my-repository labels.yml
-```
+  ---
 
-```bash
-labelforge sync mehdi-zayani/my-repository labels.yml --dry-run
-```
+  ### Preview Changes Before Applying
 
----
+  ```bash
+  labelforge sync my-org/my-repository labels.yml --dry-run
+  ```
 
-### help
+  This command displays the planned changes without modifying the repository.
 
-Displays command documentation.
+  ---
 
-```bash
-labelforge help
-```
+  ### Enable Verbose Logging
 
-or
+  ```bash
+  labelforge sync my-org/my-repository labels.yml --verbose
+  ```
 
-```bash
-labelforge --help
-```
+  Useful for troubleshooting and inspecting GitHub API operations.
 
----
+  ---
 
-### version
+  ### JSON Output
 
-Displays the installed version.
+  ```bash
+  labelforge sync my-org/my-repository labels.yml --json
+  ```
 
-```bash
-labelforge --version
-```
+  Produces machine-readable output suitable for automation and CI/CD workflows.
 
----
+  ---
 
-## Global Options
+  ### Silent Mode
 
-| Option    | Description                           |
-| --------- | ------------------------------------- |
-| --dry-run | Preview changes without applying them |
-| --json    | Output machine-readable JSON          |
-| --silent  | Disable UI output                     |
-| --verbose | Enable detailed logs                  |
-| --help    | Display help information              |
-| --version | Display current version               |
+  ```bash
+  labelforge sync my-org/my-repository labels.yml --silent
+  ```
 
----
+  Suppresses CLI output except for critical errors.
 
-## Exit Codes
+  ---
 
-| Code | Meaning          |
-| ---- | ---------------- |
-| 0    | Success          |
-| 1    | Execution failed |
+  ### Using a Default Template
 
-## Examples
+  If a default template is configured, the template argument can be omitted:
 
-### Synchronize Labels Using a Built-In Preset
+  ```bash
+  labelforge sync my-org/my-repository
+  ```
 
-```bash
-labelforge sync my-org/my-repository backend
-```
+  Labelforge will resolve the template using the following order:
 
----
+  1. CLI argument
+  2. Configured default template
+  3. Interactive template selector
 
-### Synchronize Labels Using a Custom Template
+  ---
 
-```bash
-labelforge sync my-org/my-repository labels.yml
-```
+  ### CI/CD Example
 
----
+  ```bash
+  labelforge sync my-org/my-repository backend --json
+  ```
 
-### Preview Changes Before Applying
+  This mode is suitable for automated repository provisioning and standardization workflows.
 
-```bash
-labelforge sync my-org/my-repository labels.yml --dry-run
-```
+  ## Configuration
 
-This command displays the planned changes without modifying the repository.
+  Labelforge stores user configuration locally.
 
----
+  ### Configuration File
 
-### Enable Verbose Logging
+  ```text
+  ~/.labelforge/config.json
+  ```
 
-```bash
-labelforge sync my-org/my-repository labels.yml --verbose
-```
+  ### Example
 
-Useful for troubleshooting and inspecting GitHub API operations.
+  ```json
+  {
+    "token": "github_personal_access_token",
+    "defaultTemplate": "backend"
+  }
+  ```
 
----
+  ### Properties
 
-### JSON Output
+  | Property        | Required | Description                                                    |
+  | --------------- | -------- | -------------------------------------------------------------- |
+  | token           | Yes      | GitHub Personal Access Token used for authentication           |
+  | defaultTemplate | No       | Template used when no template is provided on the command line |
 
-```bash
-labelforge sync my-org/my-repository labels.yml --json
-```
+  ### Default Template Resolution
 
-Produces machine-readable output suitable for automation and CI/CD workflows.
+  When running:
 
----
+  ```bash
+  labelforge sync <owner> <repository>
+  ```
 
-### Silent Mode
+  Labelforge resolves the template using the following order:
 
-```bash
-labelforge sync my-org/my-repository labels.yml --silent
-```
+  1. Template provided via CLI argument
+  2. `defaultTemplate` from configuration
+  3. Interactive template selection
 
-Suppresses CLI output except for critical errors.
+  ### GitHub Token
 
----
+  A GitHub Personal Access Token is required to manage repository labels.
 
-### Using a Default Template
+  The recommended way to configure authentication is:
 
-If a default template is configured, the template argument can be omitted:
+  ```bash
+  labelforge login
+  ```
 
-```bash
-labelforge sync my-org/my-repository
-```
+  This stores the token in the local configuration file and avoids passing credentials through command-line arguments.
+  ## Roadmap
 
-Labelforge will resolve the template using the following order:
+  ### Version 1.0
 
-1. CLI argument
-2. Configured default template
-3. Interactive template selector
+  * GitHub label synchronization
+  * YAML template support
+  * Built-in template presets
+  * Dry-run mode
+  * Interactive template selection
+  * JSON output mode
+  * Retry and timeout handling
+  * GitHub rate-limit awareness
+  * Local configuration management
 
----
+  ### Future Improvements
 
-### CI/CD Example
+  * Additional template presets
+  * Template marketplace and sharing
+  * Import labels from existing repositories
+  * Template validation commands
+  * Advanced synchronization policies
+  * Bulk repository synchronization
+  * GitHub organization support
+  * Enhanced CI/CD integrations
+  * Extended reporting and analytics
 
-```bash
-labelforge sync my-org/my-repository backend --json
-```
+  ### Long-Term Vision
 
-This mode is suitable for automated repository provisioning and standardization workflows.
+  Labelforge aims to become a standard tool for managing and standardizing GitHub labels across personal projects, teams, and large-scale engineering organizations.
+  ## Contributing
 
-## Configuration
+  Contributions are welcome.
 
-Labelforge stores user configuration locally.
+  ### Development Setup
 
-### Configuration File
+  ```bash id="k2q9x1"
+  git clone https://github.com/mehdi-zayani/labelforge.git
+  cd labelforge
+  npm install
+  ```
 
-```text
-~/.labelforge/config.json
-```
+  ### Build
 
-### Example
+  ```bash id="b9p3aa"
+  npm run build
+  ```
 
-```json
-{
-  "token": "github_personal_access_token",
-  "defaultTemplate": "backend"
-}
-```
+  ### Run in Development
 
-### Properties
+  ```bash id="d7w1mz"
+  npm run dev
+  ```
 
-| Property        | Required | Description                                                    |
-| --------------- | -------- | -------------------------------------------------------------- |
-| token           | Yes      | GitHub Personal Access Token used for authentication           |
-| defaultTemplate | No       | Template used when no template is provided on the command line |
+  ### Guidelines
 
-### Default Template Resolution
+  * Follow existing code structure and architecture
+  * Keep changes consistent with domain separation (CLI / application / infrastructure)
+  * Avoid duplicating logic across GitHub request and sync engine layers
+  * Ensure TypeScript strict mode compliance
+  * Write clear and minimal commits
 
-When running:
+  ### Pull Request Process
 
-```bash
-labelforge sync <owner> <repository>
-```
+  1. Create a feature branch
+  2. Make your changes
+  3. Ensure project builds successfully
+  4. Test CLI commands manually
+  5. Submit a pull request with a clear description
+  ## License
 
-Labelforge resolves the template using the following order:
+  This project is licensed under the terms of the MIT License.
 
-1. Template provided via CLI argument
-2. `defaultTemplate` from configuration
-3. Interactive template selection
-
-### GitHub Token
-
-A GitHub Personal Access Token is required to manage repository labels.
-
-The recommended way to configure authentication is:
-
-```bash
-labelforge login
-```
-
-This stores the token in the local configuration file and avoids passing credentials through command-line arguments.
-## Roadmap
-
-### Version 1.0
-
-* GitHub label synchronization
-* YAML template support
-* Built-in template presets
-* Dry-run mode
-* Interactive template selection
-* JSON output mode
-* Retry and timeout handling
-* GitHub rate-limit awareness
-* Local configuration management
-
-### Future Improvements
-
-* Additional template presets
-* Template marketplace and sharing
-* Import labels from existing repositories
-* Template validation commands
-* Advanced synchronization policies
-* Bulk repository synchronization
-* GitHub organization support
-* Enhanced CI/CD integrations
-* Extended reporting and analytics
-
-### Long-Term Vision
-
-Labelforge aims to become a standard tool for managing and standardizing GitHub labels across personal projects, teams, and large-scale engineering organizations.
-## Contributing
-
-Contributions are welcome.
-
-### Development Setup
-
-```bash id="k2q9x1"
-git clone https://github.com/your-org/labelforge.git
-cd labelforge
-npm install
-```
-
-### Build
-
-```bash id="b9p3aa"
-npm run build
-```
-
-### Run in Development
-
-```bash id="d7w1mz"
-npm run dev
-```
-
-### Guidelines
-
-* Follow existing code structure and architecture
-* Keep changes consistent with domain separation (CLI / application / infrastructure)
-* Avoid duplicating logic across GitHub request and sync engine layers
-* Ensure TypeScript strict mode compliance
-* Write clear and minimal commits
-
-### Pull Request Process
-
-1. Create a feature branch
-2. Make your changes
-3. Ensure project builds successfully
-4. Test CLI commands manually
-5. Submit a pull request with a clear description
-## License
-
-This project is licensed under the terms of the MIT License.
-
-See the LICENSE file in the root of the repository for full details.
+  See the LICENSE file in the root of the repository for full details.
