@@ -1,6 +1,6 @@
 {
   "name": "labelforge",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "CLI tool to manage and synchronize GitHub repository labels from configuration files",
   "keywords": [
     "github",
@@ -31,12 +31,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/<your-org>/labelforge.git"
+    "url": "git+https://github.com/mehdi-zayani/labelforge"
   },
   "bugs": {
-    "url": "https://github.com/<your-org>/labelforge/issues"
+    "url": "https://github.com/mehdi-zayani/labelforge/issues"
   },
-  "homepage": "https://github.com/<your-org>/labelforge#readme",
+  "homepage": "https://github.com/mehdi-zayani/labelforge#readme",
   "devDependencies": {
     "@types/node": "^25.6.2",
     "@types/prompts": "^2.4.9",

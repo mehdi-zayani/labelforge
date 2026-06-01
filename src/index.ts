@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { printSplash } from './cli/ui/splash.js';
 import { syncCommand } from './cli/commands/sync.command.js';
 import { logger } from './utils/logger.js';
